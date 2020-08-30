@@ -1,6 +1,5 @@
 package com.fatec.fincol;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -10,17 +9,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fatec.fincol.viewmodel.UserViewModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     private UserViewModel mUserViewModel;
     private TextView signInTextView;
     private Button signOutButton;
+    private Button deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,29 +28,34 @@ public class MainActivity extends AppCompatActivity {
 
         signInTextView = (TextView) findViewById(R.id.signInTextView);
         signOutButton = (Button) findViewById(R.id.signOutButton);
+        deleteButton = (Button) findViewById(R.id.deleteButton);
 
-        isSignedIn();
+        mUserViewModel.isSignIn.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                isSignedIn(aBoolean);
+            }
+        });
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mUserViewModel.signOut();
-                startActivity(new Intent(v.getContext(), LoginActivity.class));
+                startActivity(new Intent(v.getContext(), SignInActivity.class));
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mUserViewModel.deleteUser();
             }
         });
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        isSignedIn();
-    }
-
-    protected void isSignedIn(){
-        if (mUserViewModel.isSignedIn().getValue())
-            signInTextView.setText("Sign in as: " + mUserViewModel.getName());
-        else startActivity(new Intent(this, LoginActivity.class));
+    protected void isSignedIn(boolean signIn){
+        if (signIn) signInTextView.setText("Sign in as: " + mUserViewModel.getEmail());
+        else startActivity(new Intent(this, SignInActivity.class));
     }
 }
