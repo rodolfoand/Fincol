@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "116051096154",
+    "firebase_url": "https://fincol.firebaseio.com",
+    "project_id": "fincol",
+    "storage_bucket": "fincol.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116051096154:android:e6a60d6b0a40d60ace5e63",
+        "android_client_info": {
+          "package_name": "com.fatec.fincol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116051096154-ugs09t3mocs99oqhh5vtug9litoidp0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZl3DGfeZLogWxNwrVz_FVaThtxx5Knks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116051096154-ugs09t3mocs99oqhh5vtug9litoidp0r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
