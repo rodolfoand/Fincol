@@ -3,14 +3,23 @@
     <string name="e_mail">E-mail</string>
     <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
-    <string name="create_an_account">Create an account.</string>
+    <string name="create_an_user">Create an user.</string>
     <string name="new_to_fincol">New to Fincol?</string>
     <string name="sign_in">Sign in</string>
     <string name="log_in_with_the_facebook">Log in with the Facebook</string>
     <string name="log_in_with_google">Log in with Google</string>
-    <string name="account_image">Account Image</string>
+    <string name="user_image">User Image</string>
     <string name="name">Name</string>
     <string name="confirm_e_mail">Confirm e-mail</string>
     <string name="confirm_password">Confirm password</string>
-    <string name="create_account">Create account</string>
+    <string name="create_user">Create user</string>
+    <string name="password_mismatch">Password mismatch.</string>
+    <string name="e_mail_mismatch">E-mail mismatch.</string>
+    <string name="name_is_required">Name is required.</string>
+    <string name="e_mail_is_required">E-mail is required.</string>
+    <string name="password_required">Password is required.</string>
+    <string name="password_is_required">Password is required.</string>
+    <string name="e_mail_invalid">E-mail invalid.</string>
+    <string name="incorrect_e_mail_pass">Incorrect e-mail or password</string>
+    <string name="sign_out">Sign out</string>
 </resources>
