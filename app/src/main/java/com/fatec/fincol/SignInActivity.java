@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.fatec.fincol.viewmodel.UserViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
 
     private Button signInButton;
     private Button googleButton;
@@ -54,13 +54,13 @@ public class LoginActivity extends AppCompatActivity {
         emailLabel = (TextInputLayout) findViewById(R.id.emailLabel);
         passLabel = (TextInputLayout) findViewById(R.id.passLabel);
 
-        mUserViewModel.isSignedIn().observe( this, new Observer<Boolean>() {
+        mUserViewModel.isSignIn.observe( this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean)
                     finish();
                 if (!aBoolean) {
-                    Toast.makeText(LoginActivity.this, R.string.incorrect_e_mail_pass, Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignInActivity.this, R.string.incorrect_e_mail_pass, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                 else passLabel.setError(null);
 
                 if (validateSignIn()) {
+                    Toast.makeText(SignInActivity.this, "Sign", Toast.LENGTH_SHORT).show();
                     mUserViewModel.signIn(emailTextInput.getText().toString()
                             , passTextInput.getText().toString());
                     InputMethodManager ims =
@@ -113,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         createAccountTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), CreateUserActivity.class));
+                startActivity(new Intent(v.getContext(), SignUpActivity.class));
             }
         });
 

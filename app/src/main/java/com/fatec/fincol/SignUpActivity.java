@@ -9,12 +9,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.fatec.fincol.viewmodel.UserViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class CreateUserActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     private UserViewModel mUserViewModel;
 
@@ -131,8 +130,9 @@ public class CreateUserActivity extends AppCompatActivity {
                     confirmPasswordLabel.setError(getString(R.string.password_mismatch));
 
                 if (validateCreateUser()) {
-                    mUserViewModel.createUser(emailTextInput.getText().toString()
-                            , passwordTextInput.getText().toString());
+                    mUserViewModel.signUp(emailTextInput.getText().toString()
+                            , passwordTextInput.getText().toString()
+                            , nameTextInput.getText().toString());
                     finish();
                 }
 
