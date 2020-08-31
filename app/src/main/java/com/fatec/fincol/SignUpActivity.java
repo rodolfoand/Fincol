@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.fatec.fincol.R;
 import com.fatec.fincol.viewmodel.UserViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -29,12 +30,12 @@ public class SignUpActivity extends AppCompatActivity {
     private TextInputLayout passwordLabel;
     private TextInputLayout confirmPasswordLabel;
 
-    private Button createAccountButton;
+    private Button signUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_user);
+        setContentView(R.layout.activity_sign_up);
 
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
@@ -50,7 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
         passwordLabel = (TextInputLayout) findViewById(R.id.passwordLabel);
         confirmPasswordLabel = (TextInputLayout) findViewById(R.id.confirmPasswordLabel);
 
-        createAccountButton = (Button) findViewById(R.id.createUserButton);
+        signUpButton = (Button) findViewById(R.id.signUpButton);
 
         emailTextInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -93,7 +94,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        createAccountButton.setOnClickListener(new View.OnClickListener() {
+        signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -129,7 +130,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (!confirmPassword())
                     confirmPasswordLabel.setError(getString(R.string.password_mismatch));
 
-                if (validateCreateUser()) {
+                if (validateSignUp()) {
                     mUserViewModel.signUp(emailTextInput.getText().toString()
                             , passwordTextInput.getText().toString()
                             , nameTextInput.getText().toString());
@@ -175,7 +176,7 @@ public class SignUpActivity extends AppCompatActivity {
         return passwordTextInput.getText().toString().equals(confirmPasswordTextInput.getText().toString());
     }
 
-    private boolean validateCreateUser(){
+    private boolean validateSignUp(){
         return !nameIsEmpty()
                 && !emailIsEmpty()
                 && emailIsValid()

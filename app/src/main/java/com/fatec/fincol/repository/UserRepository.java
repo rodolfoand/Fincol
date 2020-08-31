@@ -1,7 +1,6 @@
 package com.fatec.fincol.repository;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.fatec.fincol.model.User;
@@ -11,45 +10,52 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserRepository {
 
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    private FirebaseUser firebaseUser;
     public MutableLiveData<Boolean> isSignIn;
+    private CollectionReference mUserCollection;
+    public MutableLiveData<User> mUser;
 
     public UserRepository() {
-
         this.mAuth = FirebaseAuth.getInstance();
-        this.currentUser = mAuth.getCurrentUser();
         this.isSignIn = new MutableLiveData<>();
         this.isSignIn.setValue(isSignedIn());
+        this.mUserCollection = FirebaseFirestore.getInstance().collection("user");
+        this.mUser = new MutableLiveData<>();
         authStateListener();
-
+        setUser();
     }
 
     public void signUp(String email, String password, String name){
         mAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                currentUser = authResult.getUser();
+                firebaseUser = authResult.getUser();
+                updateProfile(name);
+                mUser.setValue(new User(firebaseUser.getUid(), name, firebaseUser.getEmail()));
             }
         });
     }
 
     public void signIn(String email, String password){
-
         mAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener((result) -> {
             isSignIn.setValue(isSignedIn());
+            setUser();
         }).addOnFailureListener((exception) -> {
-            exception.printStackTrace();
             isSignIn.setValue(isSignedIn());
+            exception.printStackTrace();
         });
     }
 
     private boolean isSignedIn(){
-        currentUser = mAuth.getCurrentUser();
-        return (currentUser != null);
+        firebaseUser = mAuth.getCurrentUser();
+        return (firebaseUser != null);
     }
 
     public void authStateListener(){
@@ -67,25 +73,40 @@ public class UserRepository {
     }
 
     public void deleteUser(){
-        isSignedIn();
-        currentUser.delete()
+        String uid = firebaseUser.getUid();
+        firebaseUser.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             isSignIn.setValue(isSignedIn());
+                            mUserCollection.document(uid).delete();
                         }
                     }
                 });
+
+
     }
 
     public String getEmail(){
-        return currentUser.getEmail();
+        return firebaseUser.getEmail();
     }
 
 
-    private void updateProfile(String name){
+    public void updateProfile(String name){
+        mUserCollection.document(firebaseUser.getUid()).set(new User(firebaseUser.getUid(), name));
+        mUser.setValue(new User(firebaseUser.getUid(), name, firebaseUser.getEmail()));
+    }
 
+    private void setUser(){
+        if (isSignedIn()) mUserCollection.document(firebaseUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                mUser.setValue(new User(firebaseUser.getUid()
+                        , task.getResult().get("name").toString()
+                        , firebaseUser.getEmail()));
+            }
+        });
     }
 
 }

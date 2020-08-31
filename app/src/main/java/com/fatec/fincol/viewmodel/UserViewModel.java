@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.fatec.fincol.model.User;
 import com.fatec.fincol.repository.UserRepository;
 
 public class UserViewModel extends AndroidViewModel {
@@ -36,6 +37,14 @@ public class UserViewModel extends AndroidViewModel {
 
     public void deleteUser() {
         mRepository.deleteUser();
+    }
+
+    public LiveData<User> getUser(){
+        return mRepository.mUser;
+    }
+
+    public void updateProfile(String name){
+        mRepository.updateProfile(name);
     }
 
 }
