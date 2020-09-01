@@ -1,4 +1,4 @@
-package com.fatec.fincol;
+package com.fatec.fincol.ui.signup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,12 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.fatec.fincol.R;
-import com.fatec.fincol.viewmodel.UserViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private UserViewModel mUserViewModel;
+    private SignUpViewModel mSignUpViewModel;
 
     private EditText nameTextInput;
     private EditText emailTextInput;
@@ -37,7 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mSignUpViewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
 
         nameTextInput = (EditText) findViewById(R.id.nameTextInput);
         emailTextInput = (EditText) findViewById(R.id.emailTextInput);
@@ -131,7 +130,7 @@ public class SignUpActivity extends AppCompatActivity {
                     confirmPasswordLabel.setError(getString(R.string.password_mismatch));
 
                 if (validateSignUp()) {
-                    mUserViewModel.signUp(emailTextInput.getText().toString()
+                    mSignUpViewModel.signUp(emailTextInput.getText().toString()
                             , passwordTextInput.getText().toString()
                             , nameTextInput.getText().toString());
                     finish();

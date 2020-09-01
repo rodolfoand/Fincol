@@ -32,10 +32,17 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_statement">Statement</string>
+    <string name="menu_appointments">Appointments</string>
     <string name="edit_profile">Edit profile</string>
     <string name="profile">Profile</string>
     <string name="account_box">Account box</string>
     <string name="name_edit">Name Edit</string>
+    <string name="edit_image">Edit image</string>
+    <string name="fincol">Fincol</string>
+    <string name="ok">Ok</string>
+    <string name="crop_image_failure_message">crop_image_failure_message</string>
+    <string name="permissions_not_granted">Permissions not granted.</string>
+    <string name="permissions_granted">Permissions granted</string>
+    <string name="allow_media_access">Allow media access.</string>
 </resources>

@@ -1,30 +1,22 @@
-package com.fatec.fincol.ui.home;
+package com.fatec.fincol;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.fatec.fincol.model.User;
 import com.fatec.fincol.repository.UserRepository;
 
-public class HomeFragViewModel extends AndroidViewModel {
+public class HomeViewModel extends AndroidViewModel {
 
-    private MutableLiveData<String> mText;
     private UserRepository mRepository;
+    public LiveData<Boolean> isSignIn;
 
-    public HomeFragViewModel(Application application) {
+    public HomeViewModel(Application application) {
         super(application);
-
         mRepository = new UserRepository();
-
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
+        this.isSignIn = mRepository.isSignIn;
     }
 
     public LiveData<User> getUser(){

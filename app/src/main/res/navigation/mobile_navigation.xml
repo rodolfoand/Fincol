@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.fatec.fincol.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:name="com.fatec.fincol.ui.statement.StatementFragment"
+        android:label="@string/menu_statement"
+        tools:layout="@layout/fragment_statement" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.fatec.fincol.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:name="com.fatec.fincol.ui.appointments.AppointmentsFragment"
+        android:label="@string/menu_appointments"
+        tools:layout="@layout/fragment_appointments" />
 </navigation>

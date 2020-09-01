@@ -2,21 +2,20 @@ package com.fatec.fincol;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fatec.fincol.model.User;
-import com.fatec.fincol.viewmodel.UserViewModel;
+import com.fatec.fincol.ui.profile.ProfileActivity;
+import com.fatec.fincol.util.BitmapUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -30,7 +29,10 @@ import androidx.appcompat.widget.Toolbar;
 public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private UserViewModel mUserViewModel;
+
+    private HomeViewModel mHomeViewModel;
+
+    public static final int PROFILE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,19 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mHomeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mHomeViewModel.isSignIn.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (!aBoolean) finish();
+            }
+        });
     }
 
     @Override
@@ -66,13 +80,15 @@ public class HomeActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
 
-        mUserViewModel.getUser().observe(this, new Observer<User>() {
+        mHomeViewModel.getUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 TextView nameUserTextView = findViewById(R.id.nameUserTextView);
                 TextView emailUserTextView = findViewById(R.id.emailUserTextView);
+                ImageView imageView = findViewById(R.id.imageView);
                 nameUserTextView.setText(user.getName());
                 emailUserTextView.setText(user.getEmail());
+                imageView.setImageBitmap(BitmapUtil.base64ToBitmap(user.getProfileImage()));
             }
         });
 
@@ -80,8 +96,7 @@ public class HomeActivity extends AppCompatActivity {
         profileLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.this, "Profile", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(v.getContext(), ProfileActivity.class));
+                startActivityForResult(new Intent(v.getContext(), ProfileActivity.class), PROFILE_REQUEST_CODE);
             }
         });
 
@@ -93,5 +108,14 @@ public class HomeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PROFILE_REQUEST_CODE){
+            finish();
+        }
     }
 }

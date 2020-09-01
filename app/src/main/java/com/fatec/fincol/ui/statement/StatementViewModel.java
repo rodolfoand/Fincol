@@ -1,16 +1,16 @@
-package com.fatec.fincol.ui.slideshow;
+package com.fatec.fincol.ui.statement;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class StatementViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public StatementViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("This is statement fragment");
     }
 
     public LiveData<String> getText() {

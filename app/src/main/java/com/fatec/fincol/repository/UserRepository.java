@@ -70,41 +70,40 @@ public class UserRepository {
 
     public void signOut(){
         mAuth.signOut();
+        isSignIn.setValue(isSignedIn());
     }
 
     public void deleteUser(){
-        String uid = firebaseUser.getUid();
-        firebaseUser.delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            isSignIn.setValue(isSignedIn());
-                            mUserCollection.document(uid).delete();
-                        }
-                    }
-                });
 
+        mUserCollection.document(firebaseUser.getUid()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                firebaseUser.delete();
+            }
+        });
 
+        isSignIn.setValue(isSignedIn());
     }
-
-    public String getEmail(){
-        return firebaseUser.getEmail();
-    }
-
 
     public void updateProfile(String name){
-        mUserCollection.document(firebaseUser.getUid()).set(new User(firebaseUser.getUid(), name));
+        mUserCollection.document(firebaseUser.getUid()).set(new User(firebaseUser.getUid(), name, firebaseUser.getEmail()));
         mUser.setValue(new User(firebaseUser.getUid(), name, firebaseUser.getEmail()));
+    }
+
+    public void updateProfile(String name, String profileImage){
+        mUserCollection.document(firebaseUser.getUid()).set(new User(firebaseUser.getUid(), name, firebaseUser.getEmail(), profileImage));
+        mUser.setValue(new User(firebaseUser.getUid(), name, firebaseUser.getEmail(), profileImage));
     }
 
     private void setUser(){
         if (isSignedIn()) mUserCollection.document(firebaseUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                mUser.setValue(new User(firebaseUser.getUid()
-                        , task.getResult().get("name").toString()
-                        , firebaseUser.getEmail()));
+
+                    mUser.setValue(new User(firebaseUser.getUid()
+                            , task.getResult().get("name").toString()
+                            , firebaseUser.getEmail()
+                            , task.getResult().get("profileImage").toString()));
             }
         });
     }
