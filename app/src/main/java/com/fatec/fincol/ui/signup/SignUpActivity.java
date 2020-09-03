@@ -1,4 +1,4 @@
-package com.fatec.fincol;
+package com.fatec.fincol.ui.signup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -10,12 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.fatec.fincol.viewmodel.UserViewModel;
+import com.fatec.fincol.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private UserViewModel mUserViewModel;
+    private SignUpViewModel mSignUpViewModel;
 
     private EditText nameTextInput;
     private EditText emailTextInput;
@@ -29,14 +29,14 @@ public class SignUpActivity extends AppCompatActivity {
     private TextInputLayout passwordLabel;
     private TextInputLayout confirmPasswordLabel;
 
-    private Button createAccountButton;
+    private Button signUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_user);
+        setContentView(R.layout.activity_sign_up);
 
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mSignUpViewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
 
         nameTextInput = (EditText) findViewById(R.id.nameTextInput);
         emailTextInput = (EditText) findViewById(R.id.emailTextInput);
@@ -50,7 +50,7 @@ public class SignUpActivity extends AppCompatActivity {
         passwordLabel = (TextInputLayout) findViewById(R.id.passwordLabel);
         confirmPasswordLabel = (TextInputLayout) findViewById(R.id.confirmPasswordLabel);
 
-        createAccountButton = (Button) findViewById(R.id.createUserButton);
+        signUpButton = (Button) findViewById(R.id.signUpButton);
 
         emailTextInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -93,7 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        createAccountButton.setOnClickListener(new View.OnClickListener() {
+        signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -129,8 +129,8 @@ public class SignUpActivity extends AppCompatActivity {
                 if (!confirmPassword())
                     confirmPasswordLabel.setError(getString(R.string.password_mismatch));
 
-                if (validateCreateUser()) {
-                    mUserViewModel.signUp(emailTextInput.getText().toString()
+                if (validateSignUp()) {
+                    mSignUpViewModel.signUp(emailTextInput.getText().toString()
                             , passwordTextInput.getText().toString()
                             , nameTextInput.getText().toString());
                     finish();
@@ -175,7 +175,7 @@ public class SignUpActivity extends AppCompatActivity {
         return passwordTextInput.getText().toString().equals(confirmPasswordTextInput.getText().toString());
     }
 
-    private boolean validateCreateUser(){
+    private boolean validateSignUp(){
         return !nameIsEmpty()
                 && !emailIsEmpty()
                 && emailIsValid()

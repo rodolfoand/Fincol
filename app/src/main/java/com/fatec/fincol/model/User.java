@@ -2,11 +2,21 @@ package com.fatec.fincol.model;
 
 public class User {
     private String uid;
-    private String Name;
+    private String name;
+    private String email;
+    private String profileImage;
 
-    public User(String uid, String name) {
+    public User(String uid, String name, String email) {
         this.uid = uid;
-        Name = name;
+        this.name = name;
+        this.email = email;
+    }
+
+    public User(String uid, String name, String email, String profileImage) {
+        this.uid = uid;
+        this.name = name;
+        this.email = email;
+        this.profileImage = profileImage;
     }
 
     public String getUid() {
@@ -18,10 +28,26 @@ public class User {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }
