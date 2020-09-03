@@ -1,4 +1,4 @@
-package com.fatec.fincol;
+package com.fatec.fincol.ui.signin;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -14,7 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fatec.fincol.viewmodel.UserViewModel;
+import com.fatec.fincol.R;
+import com.fatec.fincol.ui.signup.SignUpActivity;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignInActivity extends AppCompatActivity {
@@ -32,14 +33,14 @@ public class SignInActivity extends AppCompatActivity {
     private TextView forgotTextView;
     private TextView createAccountTextView;
 
-    private UserViewModel mUserViewModel;
+    private SignInViewModel mSignInViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign_in);
 
-        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        mSignInViewModel = new ViewModelProvider(this).get(SignInViewModel.class);
 
         signInButton = (Button) findViewById(R.id.signInButton);
         googleButton = (Button) findViewById(R.id.googleButton);
@@ -54,7 +55,8 @@ public class SignInActivity extends AppCompatActivity {
         emailLabel = (TextInputLayout) findViewById(R.id.emailLabel);
         passLabel = (TextInputLayout) findViewById(R.id.passLabel);
 
-        mUserViewModel.isSignIn.observe( this, new Observer<Boolean>() {
+
+        mSignInViewModel.isSignIn.observe( this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean)
@@ -64,6 +66,7 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,8 +83,7 @@ public class SignInActivity extends AppCompatActivity {
                 else passLabel.setError(null);
 
                 if (validateSignIn()) {
-                    Toast.makeText(SignInActivity.this, "Sign", Toast.LENGTH_SHORT).show();
-                    mUserViewModel.signIn(emailTextInput.getText().toString()
+                    mSignInViewModel.signIn(emailTextInput.getText().toString()
                             , passTextInput.getText().toString());
                     InputMethodManager ims =
                             (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -119,7 +121,6 @@ public class SignInActivity extends AppCompatActivity {
         });
 
     }
-
 
     private boolean emailIsEmpty(){
         return emailTextInput.getText().toString().isEmpty();

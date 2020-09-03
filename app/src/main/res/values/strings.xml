@@ -22,4 +22,29 @@
     <string name="e_mail_invalid">E-mail invalid.</string>
     <string name="incorrect_e_mail_pass">Incorrect e-mail or password</string>
     <string name="sign_out">Sign out</string>
+    <string name="delete_user">Delete user</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_statement">Statement</string>
+    <string name="menu_appointments">Appointments</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="profile">Profile</string>
+    <string name="account_box">Account box</string>
+    <string name="name_edit">Name Edit</string>
+    <string name="edit_image">Edit image</string>
+    <string name="fincol">Fincol</string>
+    <string name="ok">Ok</string>
+    <string name="crop_image_failure_message">crop_image_failure_message</string>
+    <string name="permissions_not_granted">Permissions not granted.</string>
+    <string name="permissions_granted">Permissions granted</string>
+    <string name="allow_media_access">Allow media access.</string>
+    <string name="no_image">no_image</string>
+    <string name="camera">camera</string>
 </resources>
