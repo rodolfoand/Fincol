@@ -1,6 +1,7 @@
 package com.fatec.fincol.repository;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.fatec.fincol.model.User;
@@ -38,7 +39,6 @@ public class UserRepository {
             public void onSuccess(AuthResult authResult) {
                 firebaseUser = authResult.getUser();
                 updateProfile(name);
-                mUser.setValue(new User(firebaseUser.getUid(), name, firebaseUser.getEmail()));
             }
         });
     }
@@ -81,31 +81,38 @@ public class UserRepository {
                 firebaseUser.delete();
             }
         });
-
         isSignIn.setValue(isSignedIn());
     }
 
     public void updateProfile(String name){
-        mUserCollection.document(firebaseUser.getUid()).set(new User(firebaseUser.getUid(), name, firebaseUser.getEmail()));
-        mUser.setValue(new User(firebaseUser.getUid(), name, firebaseUser.getEmail()));
+
+        User user = new User(firebaseUser.getUid(), name, firebaseUser.getEmail());
+        mUserCollection.document(firebaseUser.getUid()).set(user);
+        setUser(user);
     }
 
     public void updateProfile(String name, String profileImage){
-        mUserCollection.document(firebaseUser.getUid()).set(new User(firebaseUser.getUid(), name, firebaseUser.getEmail(), profileImage));
-        mUser.setValue(new User(firebaseUser.getUid(), name, firebaseUser.getEmail(), profileImage));
+        User user = new User(firebaseUser.getUid(), name, firebaseUser.getEmail(), profileImage);
+        mUserCollection.document(firebaseUser.getUid()).set(user);
+        setUser(user);
     }
 
     private void setUser(){
         if (isSignedIn()) mUserCollection.document(firebaseUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                    mUser.setValue(new User(firebaseUser.getUid()
-                            , task.getResult().get("name").toString()
-                            , firebaseUser.getEmail()
-                            , task.getResult().get("profileImage").toString()));
+                User user = new User(firebaseUser.getUid()
+                        , task.getResult().get("name") != null ? task.getResult().get("name").toString() : new String()
+                        , firebaseUser.getEmail()
+                        , task.getResult().get("profileImage") != null ? task.getResult().get("profileImage").toString() : "");
+                setUser(user);
             }
         });
+    }
+
+    private void setUser(User user){
+        if (user.getProfileImage() == null) user.setProfileImage(new String());
+        mUser.setValue(user);
     }
 
 }

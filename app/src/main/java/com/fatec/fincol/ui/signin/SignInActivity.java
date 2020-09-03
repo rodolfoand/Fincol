@@ -56,6 +56,18 @@ public class SignInActivity extends AppCompatActivity {
         passLabel = (TextInputLayout) findViewById(R.id.passLabel);
 
 
+        mSignInViewModel.isSignIn.observe( this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean)
+                    finish();
+                if (!aBoolean) {
+                    Toast.makeText(SignInActivity.this, R.string.incorrect_e_mail_pass, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +83,6 @@ public class SignInActivity extends AppCompatActivity {
                 else passLabel.setError(null);
 
                 if (validateSignIn()) {
-                    Toast.makeText(SignInActivity.this, "Sign", Toast.LENGTH_SHORT).show();
                     mSignInViewModel.signIn(emailTextInput.getText().toString()
                             , passTextInput.getText().toString());
                     InputMethodManager ims =
@@ -109,22 +120,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mSignInViewModel.isSignIn.observe( this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean)
-                    finish();
-                if (!aBoolean) {
-                    Toast.makeText(SignInActivity.this, R.string.incorrect_e_mail_pass, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
     }
 
     private boolean emailIsEmpty(){

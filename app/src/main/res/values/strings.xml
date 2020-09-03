@@ -45,4 +45,6 @@
     <string name="permissions_not_granted">Permissions not granted.</string>
     <string name="permissions_granted">Permissions granted</string>
     <string name="allow_media_access">Allow media access.</string>
+    <string name="no_image">no_image</string>
+    <string name="camera">camera</string>
 </resources>

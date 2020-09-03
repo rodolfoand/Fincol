@@ -6,11 +6,6 @@ public class User {
     private String email;
     private String profileImage;
 
-    public User(String uid, String name) {
-        this.uid = uid;
-        this.name = name;
-    }
-
     public User(String uid, String name, String email) {
         this.uid = uid;
         this.name = name;

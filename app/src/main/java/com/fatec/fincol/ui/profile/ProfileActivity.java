@@ -3,6 +3,7 @@ package com.fatec.fincol.ui.profile;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private ImageView editImageView;
     private Button signOutButton;
+    private ProgressBar profileProgressBar;
+    private CardView profileCardView;
 
 
     static final int REQUEST_IMAGE = 1;
@@ -68,13 +72,20 @@ public class ProfileActivity extends AppCompatActivity {
         profileImageView = findViewById(R.id.profileImageView);
         editImageView = findViewById(R.id.editImageView);
         signOutButton = findViewById(R.id.signOutButton);
+        profileProgressBar = findViewById(R.id.profileProgressBar);
+        profileCardView = findViewById(R.id.profileCardView);
 
         mProfileViewModel.getUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
+
+                profileProgressBar.setVisibility(View.INVISIBLE);
+                profileCardView.setVisibility(View.VISIBLE);
+
                 profileNameTextView.setText(user.getName());
                 profileEmailTextView.setText(user.getEmail());
-                profileImageView.setImageBitmap(BitmapUtil.base64ToBitmap(user.getProfileImage()));
+                if (!user.getProfileImage().isEmpty())
+                    profileImageView.setImageBitmap(BitmapUtil.base64ToBitmap(user.getProfileImage()));
             }
         });
 
@@ -97,8 +108,8 @@ public class ProfileActivity extends AppCompatActivity {
                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        nameTextInput.getText().toString();
-                        mProfileViewModel.updateProfile(nameTextInput.getText().toString());
+                        profileNameTextView.setText(nameTextInput.getText().toString());
+                        mProfileViewModel.updateProfile(profileNameTextView.getText().toString());
                     }
                 });
                 AlertDialog dialog = alert.create();

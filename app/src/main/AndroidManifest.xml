@@ -20,8 +20,9 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".ui.signup.SignUpActivity"
-            android:parentActivityName=".ui.signin.SignInActivity"/>
-        <activity android:name=".ui.signin.SignInActivity" />
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".ui.signin.SignInActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

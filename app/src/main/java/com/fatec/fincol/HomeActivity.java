@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fatec.fincol.model.User;
@@ -28,10 +29,13 @@ import androidx.appcompat.widget.Toolbar;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private TextView nameUserTextView;
+    private TextView emailUserTextView;
+    private ImageView imageView;
+    private ProgressBar homeProgressBar;
+
     private AppBarConfiguration mAppBarConfiguration;
-
     private HomeViewModel mHomeViewModel;
-
     public static final int PROFILE_REQUEST_CODE = 1;
 
     @Override
@@ -39,6 +43,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+
+
+
+
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +75,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         mHomeViewModel.isSignIn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -83,12 +91,17 @@ public class HomeActivity extends AppCompatActivity {
         mHomeViewModel.getUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                TextView nameUserTextView = findViewById(R.id.nameUserTextView);
-                TextView emailUserTextView = findViewById(R.id.emailUserTextView);
-                ImageView imageView = findViewById(R.id.imageView);
+                nameUserTextView = findViewById(R.id.nameUserTextView);
+                emailUserTextView = findViewById(R.id.emailUserTextView);
+                imageView = findViewById(R.id.imageView);
+                homeProgressBar = findViewById(R.id.homeProgressBar);
+
+                homeProgressBar.setVisibility(View.INVISIBLE);
+
                 nameUserTextView.setText(user.getName());
                 emailUserTextView.setText(user.getEmail());
-                imageView.setImageBitmap(BitmapUtil.base64ToBitmap(user.getProfileImage()));
+                if (!user.getProfileImage().isEmpty())
+                    imageView.setImageBitmap(BitmapUtil.base64ToBitmap(user.getProfileImage()));
             }
         });
 
