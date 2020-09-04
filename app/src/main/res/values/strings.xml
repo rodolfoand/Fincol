@@ -47,4 +47,5 @@
     <string name="allow_media_access">Allow media access.</string>
     <string name="no_image">no_image</string>
     <string name="camera">camera</string>
+    <string name="transaction">Transaction</string>
 </resources>
