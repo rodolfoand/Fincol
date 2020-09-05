@@ -15,9 +15,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,12 +27,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fatec.fincol.HomeActivity;
 import com.fatec.fincol.R;
 import com.fatec.fincol.model.User;
 import com.fatec.fincol.util.BitmapUtil;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.File;
 import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -43,20 +41,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView profileNameTextView;
     private TextView profileEmailTextView;
+
     private ImageView profileImageView;
-    private ImageView editImageView;
+    private ImageView editNameImageView;
+
     private Button signOutButton;
+
     private ProgressBar profileProgressBar;
     private CardView profileCardView;
 
+    private View mLayout;
 
     static final int REQUEST_IMAGE = 1;
     static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
     static final int REQUEST_CODE_CROP = 3;
-
-    private View mLayout;
-
-    private static final String TAG = ProfileActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +68,12 @@ public class ProfileActivity extends AppCompatActivity {
         profileNameTextView = findViewById(R.id.profileNameTextView);
         profileEmailTextView = findViewById(R.id.profileEmailTextView);
         profileImageView = findViewById(R.id.profileImageView);
-        editImageView = findViewById(R.id.editImageView);
+        editNameImageView = findViewById(R.id.editNameImageView);
         signOutButton = findViewById(R.id.signOutButton);
         profileProgressBar = findViewById(R.id.profileProgressBar);
         profileCardView = findViewById(R.id.profileCardView);
 
-        mProfileViewModel.getUser().observe(this, new Observer<User>() {
+        mProfileViewModel.mUser.observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
 
@@ -89,31 +87,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        editImageView.setOnClickListener(new View.OnClickListener() {
+        editNameImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater inflater = getLayoutInflater();
-                View alertLayout = inflater.inflate(R.layout.dialog_edit_name, null);
-                EditText nameTextInput = alertLayout.findViewById(R.id.nameTextInput);
-                nameTextInput.setText(profileNameTextView.getText().toString());
-
-                AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext());
-                alert.setView(alertLayout);
-                alert.setCancelable(false);
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        profileNameTextView.setText(nameTextInput.getText().toString());
-                        mProfileViewModel.updateProfile(profileNameTextView.getText().toString());
-                    }
-                });
-                AlertDialog dialog = alert.create();
-                dialog.show();
+                editName();
             }
         });
 
@@ -121,6 +98,8 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mProfileViewModel.signOut();
+                Intent replyIntent = new Intent();
+                setResult(HomeActivity.SIGN_OUT_REQUEST_CODE, replyIntent);
                 finish();
             }
         });
@@ -131,8 +110,6 @@ public class ProfileActivity extends AppCompatActivity {
                 verifyPermissions();
             }
         });
-
-
     }
 
     @Override
@@ -147,10 +124,37 @@ public class ProfileActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_delete_user:
                 mProfileViewModel.deleteUser();
+                Intent replyIntent = new Intent();
+                setResult(HomeActivity.DELETE_REQUEST_CODE, replyIntent);
                 finish();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void editName(){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.dialog_edit_name, null);
+        EditText nameTextInput = alertLayout.findViewById(R.id.nameTextInput);
+        nameTextInput.setText(profileNameTextView.getText().toString());
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setView(alertLayout);
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                profileNameTextView.setText(nameTextInput.getText().toString());
+                mProfileViewModel.updateProfile(profileNameTextView.getText().toString());
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
 
     private void verifyPermissions() {
@@ -206,9 +210,9 @@ public class ProfileActivity extends AppCompatActivity {
         intent.putExtra("scale", "true");
         intent.putExtra("return-data", false);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.name());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getExternalStorageTempStoreFilePath()));
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         startActivityForResult(intent, REQUEST_CODE_CROP);
+
     }
 
     @Override
@@ -219,6 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 cropUri(BitmapUtil.getImageUri(this, bitmap));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -239,27 +244,6 @@ public class ProfileActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             profileImageView.setImageURI(data.getData());
-            deleteExternalStoragePublicPicture();
-        }
-    }
-
-    private File getExternalStorageTempStoreFilePath() {
-        File path = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File file = new File(path, "selected_temp_image.jpg");
-        return file;
-    }
-
-    private void deleteExternalStoragePublicPicture() {
-        // Create a path where we will place our picture in the user's
-        // public pictures directory and delete the file.  If external
-        // storage is not currently mounted this will fail.
-        File file = getExternalStorageTempStoreFilePath();
-        if (file != null) {
-            // Log.d("ImageSelectionCropDemo", file.getAbsolutePath() + " is " + file.exists());
-            if (!file.delete()) {
-                Log.e("ImageSelectionCropDemo", "File deletion failed.");
-            }
         }
     }
 }

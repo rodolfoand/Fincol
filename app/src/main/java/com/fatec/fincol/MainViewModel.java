@@ -17,4 +17,8 @@ public class MainViewModel extends AndroidViewModel {
         mRepository = new UserRepository();
         this.isSignIn = mRepository.isSignIn;
     }
+
+    public void setIsSignIn() {
+        mRepository.setIsSignIn();
+    }
 }

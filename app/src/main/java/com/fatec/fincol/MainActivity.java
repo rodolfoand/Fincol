@@ -13,17 +13,14 @@ public class MainActivity extends AppCompatActivity {
 
     private MainViewModel mMainViewModel;
 
+    public static final int SIGN_IN_REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mMainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         mMainViewModel.isSignIn.observe(this, new Observer<Boolean>() {
             @Override
@@ -35,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
     protected void isSignedIn(boolean signIn){
         if (signIn) startActivity(new Intent(this, HomeActivity.class));
-        else startActivity(new Intent(this, SignInActivity.class));
+        else startActivityForResult(new Intent(this, SignInActivity.class), SIGN_IN_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMainViewModel.setIsSignIn();
     }
 }

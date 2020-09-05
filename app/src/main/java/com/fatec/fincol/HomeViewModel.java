@@ -11,15 +11,12 @@ import com.fatec.fincol.repository.UserRepository;
 public class HomeViewModel extends AndroidViewModel {
 
     private UserRepository mRepository;
-    public LiveData<Boolean> isSignIn;
+    public LiveData<User> mUser;
 
     public HomeViewModel(Application application) {
         super(application);
-        mRepository = new UserRepository();
-        this.isSignIn = mRepository.isSignIn;
-    }
-
-    public LiveData<User> getUser(){
-        return mRepository.mUser;
+        this.mRepository = new UserRepository();
+        this.mUser = mRepository.mUser;
+        mRepository.setUser();
     }
 }

@@ -13,14 +13,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.fatec.fincol.R;
-import com.fatec.fincol.model.User;
 
 public class HomeFragment extends Fragment {
 
     private HomeFragViewModel mHomeViewModel;
-
-    private TextView signInTextView;
-    private TextView nameTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,18 +29,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
-            }
-        });
-
-
-        signInTextView = (TextView) root.findViewById(R.id.signInTextView);
-        nameTextView = (TextView) root.findViewById(R.id.nameTextView);
-
-        mHomeViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                nameTextView.setText(user.getName());
-                signInTextView.setText(user.getEmail());
             }
         });
 

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fatec.fincol.model.User;
 import com.fatec.fincol.ui.profile.ProfileActivity;
@@ -29,24 +30,18 @@ import androidx.appcompat.widget.Toolbar;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView nameUserTextView;
-    private TextView emailUserTextView;
-    private ImageView imageView;
-    private ProgressBar homeProgressBar;
-
     private AppBarConfiguration mAppBarConfiguration;
     private HomeViewModel mHomeViewModel;
+
     public static final int PROFILE_REQUEST_CODE = 1;
+    public static final int SIGN_OUT_REQUEST_CODE = 2;
+    public static final int DELETE_REQUEST_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
-
-
-
-
 
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -70,17 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         mHomeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mHomeViewModel.isSignIn.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (!aBoolean) finish();
-            }
-        });
     }
 
     @Override
@@ -88,13 +73,15 @@ public class HomeActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
 
-        mHomeViewModel.getUser().observe(this, new Observer<User>() {
+        TextView nameUserTextView = findViewById(R.id.nameUserTextView);
+        TextView emailUserTextView = findViewById(R.id.emailUserTextView);
+        ImageView imageView = findViewById(R.id.imageView);
+
+        ProgressBar homeProgressBar = findViewById(R.id.homeProgressBar);
+
+        mHomeViewModel.mUser.observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                nameUserTextView = findViewById(R.id.nameUserTextView);
-                emailUserTextView = findViewById(R.id.emailUserTextView);
-                imageView = findViewById(R.id.imageView);
-                homeProgressBar = findViewById(R.id.homeProgressBar);
 
                 homeProgressBar.setVisibility(View.INVISIBLE);
 
@@ -112,7 +99,6 @@ public class HomeActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(v.getContext(), ProfileActivity.class), PROFILE_REQUEST_CODE);
             }
         });
-
         return true;
     }
 
@@ -128,6 +114,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PROFILE_REQUEST_CODE){
+            if (resultCode == SIGN_OUT_REQUEST_CODE)
+                Toast.makeText(this, R.string.come_back_soon, Toast.LENGTH_SHORT).show();
+
+            if (resultCode == DELETE_REQUEST_CODE) {
+                Toast.makeText(this, R.string.bye, Toast.LENGTH_SHORT).show();
+                finishAffinity();
+            }
+
             finish();
         }
     }
