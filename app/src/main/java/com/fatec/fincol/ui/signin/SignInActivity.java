@@ -1,5 +1,6 @@
 package com.fatec.fincol.ui.signin;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,6 +36,8 @@ public class SignInActivity extends AppCompatActivity {
 
     private SignInViewModel mSignInViewModel;
 
+    public static final int SIGN_UP_ACTIVITY_REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,18 +58,18 @@ public class SignInActivity extends AppCompatActivity {
         emailLabel = (TextInputLayout) findViewById(R.id.emailLabel);
         passLabel = (TextInputLayout) findViewById(R.id.passLabel);
 
-
-        mSignInViewModel.isSignIn.observe( this, new Observer<Boolean>() {
+        mSignInViewModel.isSignIn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if (aBoolean)
+                if (aBoolean) {
+                    Toast.makeText(SignInActivity.this, R.string.welcome_fincol, Toast.LENGTH_SHORT).show();
                     finish();
-                if (!aBoolean) {
-                    Toast.makeText(SignInActivity.this, R.string.incorrect_e_mail_pass, Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(SignInActivity.this, R.string.incorrect_e_mail_pass, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +88,7 @@ public class SignInActivity extends AppCompatActivity {
                 if (validateSignIn()) {
                     mSignInViewModel.signIn(emailTextInput.getText().toString()
                             , passTextInput.getText().toString());
+
                     InputMethodManager ims =
                             (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     ims.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -116,10 +120,9 @@ public class SignInActivity extends AppCompatActivity {
         createAccountTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), SignUpActivity.class));
+                startActivityForResult(new Intent(v.getContext(), SignUpActivity.class), SIGN_UP_ACTIVITY_REQUEST_CODE);
             }
         });
-
     }
 
     private boolean emailIsEmpty(){
@@ -137,11 +140,18 @@ public class SignInActivity extends AppCompatActivity {
         return passTextInput.getText().toString().isEmpty();
     }
 
-
     private boolean validateSignIn(){
         return !emailIsEmpty()
                 && emailIsValid()
                 && !passwordIsEmpty();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SIGN_UP_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK){
+            mSignInViewModel.setIsSignIn();
+        }
+    }
 }

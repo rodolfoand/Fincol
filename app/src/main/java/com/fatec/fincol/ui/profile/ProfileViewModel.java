@@ -11,19 +11,19 @@ import com.fatec.fincol.repository.UserRepository;
 public class ProfileViewModel extends AndroidViewModel {
 
     private UserRepository mRepository;
+    public LiveData<User> mUser;
 
     public ProfileViewModel(Application application) {
         super(application);
         mRepository = new UserRepository();
-    }
-
-    public LiveData<User> getUser(){
-        return mRepository.mUser;
+        this.mUser = mRepository.mUser;
+        mRepository.setUser();
     }
 
     public void updateProfile(String name){
         mRepository.updateProfile(name);
     }
+
     public void updateProfile(String name, String profileImage){
         mRepository.updateProfile(name, profileImage);
     }

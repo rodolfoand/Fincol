@@ -47,4 +47,8 @@
     <string name="allow_media_access">Allow media access.</string>
     <string name="no_image">no_image</string>
     <string name="camera">camera</string>
+    <string name="welcome_fincol">Welcome to Fincol!</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="come_back_soon">Come back soon!</string>
+    <string name="bye">Bye!</string>
 </resources>
