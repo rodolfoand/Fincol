@@ -1,14 +1,17 @@
 package com.fatec.fincol.ui.signup;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fatec.fincol.R;
 import com.google.android.material.textfield.TextInputLayout;
@@ -52,6 +55,17 @@ public class SignUpActivity extends AppCompatActivity {
 
         signUpButton = (Button) findViewById(R.id.signUpButton);
 
+        mSignUpViewModel.isSignIn.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    Intent replyIntent = new Intent();
+                    setResult(RESULT_OK, replyIntent);
+                    finish();
+                }
+            }
+        });
+
         emailTextInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -79,6 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
                     confirmEmailLabel.setError(null);
             }
         });
+
         confirmPasswordTextInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -132,10 +147,14 @@ public class SignUpActivity extends AppCompatActivity {
                 if (validateSignUp()) {
                     mSignUpViewModel.signUp(emailTextInput.getText().toString()
                             , passwordTextInput.getText().toString()
-                            , nameTextInput.getText().toString());
-                    finish();
+                            , nameTextInput.getText().toString()).observe(SignUpActivity.this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            if (!s.isEmpty())
+                                Toast.makeText(SignUpActivity.this, s, Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
-
             }
         });
     }
