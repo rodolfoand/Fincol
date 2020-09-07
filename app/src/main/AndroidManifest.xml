@@ -11,17 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.profile.ProfileActivity"
-            android:parentActivityName=".HomeActivity"
-            android:label="@string/profile"></activity>
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:label="@string/profile"
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/fincol"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".ui.signup.SignUpActivity"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".ui.signin.SignInActivity"/>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.signup.SignUpActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".ui.signin.SignInActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,7 +1,10 @@
 package com.fatec.fincol;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Menu;
 import android.widget.ImageView;
@@ -57,14 +60,20 @@ public class HomeActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_account)
                 .setDrawerLayout(drawer)
                 .build();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("amount", "1");
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         mHomeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+
 
     }
 
@@ -89,6 +98,19 @@ public class HomeActivity extends AppCompatActivity {
                 emailUserTextView.setText(user.getEmail());
                 if (!user.getProfileImage().isEmpty())
                     imageView.setImageBitmap(BitmapUtil.base64ToBitmap(user.getProfileImage()));
+
+//                Context context = getApplicationContext();
+//                SharedPreferences sharedPref = context.getSharedPreferences(
+//                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPref.edit();
+//                editor.putString(getString(R.string.saved_uid_user_key), user.getUid());
+//                //editor.putString(user.getUid(), "Not found");
+//                editor.commit();
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(getString(R.string.saved_uid_user_key),user.getUid());
+                editor.apply();
             }
         });
 
@@ -125,4 +147,5 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         }
     }
+
 }
