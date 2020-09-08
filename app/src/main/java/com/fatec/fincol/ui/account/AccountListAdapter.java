@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fatec.fincol.R;
 import com.fatec.fincol.model.AccountVersion2;
+import com.fatec.fincol.util.BitmapUtil;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
@@ -22,11 +24,13 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
 
         private final TextView accountNameCardTextView;
         private final MaterialCardView accountsCardView;
+        private final ImageView accountCardimageView;
 
         public MyAccountsViewHolder(@NonNull View itemView) {
             super(itemView);
             accountNameCardTextView = itemView.findViewById(R.id.accountNameCardTextView);
             accountsCardView = itemView.findViewById(R.id.accountsCardView);
+            accountCardimageView = itemView.findViewById(R.id.accountCardimageView);
         }
     }
 
@@ -51,6 +55,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         if (mMyAccounts != null) {
             AccountVersion2 current = mMyAccounts.get(position);
             holder.accountNameCardTextView.setText(current.getName());
+            holder.accountCardimageView.setImageBitmap(BitmapUtil.base64ToBitmap(current.getAccountImage()));
             holder.accountsCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
