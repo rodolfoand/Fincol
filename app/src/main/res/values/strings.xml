@@ -53,6 +53,7 @@
     <string name="bye">Bye!</string>
     <string name="new_">New</string>
     <string name="new_account">New Account</string>
+    <string name="account">Account</string>
     <string name="account_image">account image</string>
     <string name="add_collaborator">Add new collaborator</string>
     <string name="save">Save</string>

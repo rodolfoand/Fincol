@@ -18,19 +18,19 @@
         tools:layout="@layout/fragment_statement" />
 
     <fragment
-        android:id="@+id/nav_account"
-        android:name="com.fatec.fincol.ui.account.AccountFragment"
+        android:id="@+id/nav_account_list"
+        android:name="com.fatec.fincol.ui.account.AccountListFragment"
         android:label="@string/menu_account"
-        tools:layout="@layout/fragment_account" >
+        tools:layout="@layout/fragment_account_list" >
         <action
             android:id="@+id/action_nav_account_to_nav_new_account"
-            app:destination="@id/nav_new_account" />
+            app:destination="@id/nav_account_detail" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_new_account"
-        android:name="com.fatec.fincol.ui.account.NewAccountFragment"
-        android:label="@string/new_account"
-        tools:layout="@layout/fragment_new_account" />
+        android:id="@+id/nav_account_detail"
+        android:name="com.fatec.fincol.ui.account.AccountDetailFragment"
+        android:label="@string/account"
+        tools:layout="@layout/fragment_account_detail" />
 
 </navigation>

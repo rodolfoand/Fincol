@@ -19,30 +19,53 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.fatec.fincol.R;
+import com.fatec.fincol.model.AccountVersion2;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class NewAccountFragment extends Fragment {
+public class AccountDetailFragment extends Fragment {
 
     private AccountViewModel mAccountViewModel;
 
     private TextInputLayout accountNameTextInputLayout;
     private TextInputEditText accountNameEditText;
     private Button saveAccountButton;
+    private AccountVersion2 mAccount;
 
-    public static NewAccountFragment newInstance() {
-        return new NewAccountFragment();
+    public static AccountDetailFragment newInstance() {
+        return new AccountDetailFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_new_account, container, false);
+        View root = inflater.inflate(R.layout.fragment_account_detail, container, false);
 
         saveAccountButton = root.findViewById(R.id.saveAccountButton);
         accountNameEditText = root.findViewById(R.id.accountNameEditText);
         accountNameTextInputLayout = root.findViewById(R.id.accountNameTextInputLayout);
+
+
+        if (getArguments() != null
+                && getArguments().containsKey("account_id")
+                && getArguments().containsKey("account_name")){
+
+            String account_id = getArguments().getString("account_id");
+            String account_name = getArguments().getString("account_name");
+
+            mAccount = new AccountVersion2(account_id, account_name);
+
+            accountNameEditText.setText(mAccount.getName());
+
+            if (getArguments().containsKey("account_image")
+            && getArguments().getString("account_image") != null){
+
+                String account_image = getArguments().getString("account_image");
+                mAccount.setAccountImage(account_image);
+            }
+        }
+
 
         saveAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +74,12 @@ public class NewAccountFragment extends Fragment {
 
                 if (validateSaveAccount()){
                     Toast.makeText(v.getContext(), accountNameEditText.getText().toString(), Toast.LENGTH_SHORT).show();
-                    mAccountViewModel.updateAccount(accountNameEditText.getText().toString());
+                    if (mAccount == null) {
+                        mAccountViewModel.updateAccount(accountNameEditText.getText().toString());
+                    } else {
+                        mAccount.setName(accountNameEditText.getText().toString());
+                        mAccountViewModel.updateAccount(mAccount);
+                    }
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                     navController.popBackStack();
                 }

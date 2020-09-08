@@ -11,26 +11,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fatec.fincol.R;
 import com.fatec.fincol.model.AccountVersion2;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
-public class MyAccountsAdapter extends RecyclerView.Adapter<MyAccountsAdapter.MyAccountsViewHolder> {
+public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.MyAccountsViewHolder> {
 
 
     public class MyAccountsViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView accountNameCardTextView;
+        private final MaterialCardView accountsCardView;
 
         public MyAccountsViewHolder(@NonNull View itemView) {
             super(itemView);
             accountNameCardTextView = itemView.findViewById(R.id.accountNameCardTextView);
+            accountsCardView = itemView.findViewById(R.id.accountsCardView);
         }
     }
 
     private final LayoutInflater mInflater;
     private List<AccountVersion2> mMyAccounts; // Cached copy of words
+    private CallFragNavigation mCallFragNavigation;
 
-    public MyAccountsAdapter(Context context) { mInflater = LayoutInflater.from(context); }
+    public AccountListAdapter(Context context, CallFragNavigation callFragNavigation) {
+        mInflater = LayoutInflater.from(context);
+        this.mCallFragNavigation = callFragNavigation;
+    }
 
     @NonNull
     @Override
@@ -44,6 +51,12 @@ public class MyAccountsAdapter extends RecyclerView.Adapter<MyAccountsAdapter.My
         if (mMyAccounts != null) {
             AccountVersion2 current = mMyAccounts.get(position);
             holder.accountNameCardTextView.setText(current.getName());
+            holder.accountsCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallFragNavigation.navEdidAccountFrag(current.getId(), current.getName(), current.getAccountImage());
+                }
+            });
         }
     }
 
@@ -58,4 +71,9 @@ public class MyAccountsAdapter extends RecyclerView.Adapter<MyAccountsAdapter.My
             return mMyAccounts.size();
         else return 0;
     }
+
+    public interface CallFragNavigation{
+        void navEdidAccountFrag(String account_id, String account_name, String account_image);
+    }
+
 }

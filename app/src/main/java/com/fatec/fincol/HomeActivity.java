@@ -1,6 +1,5 @@
 package com.fatec.fincol;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -60,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_account)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_account_list)
                 .setDrawerLayout(drawer)
                 .build();
 

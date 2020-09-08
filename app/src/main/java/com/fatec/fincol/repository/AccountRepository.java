@@ -60,6 +60,23 @@ public class AccountRepository {
         Log.d("Account", "END");
     }
 
+    public void updateAccount(AccountVersion2 account){
+        mAccountCollection.document(account.getId()).set(account);
+
+//                .add(account).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentReference> task) {
+//                account.setId(task.getResult().getId());
+//                Collaborator collaborator = new Collaborator(mUser.getValue().getUid(), account.getId());
+//                mCollaboratorCollection.add(collaborator);
+//                mAccountCollection.document(account.getId()).set(account);
+//                getMyAccounts();
+//            }
+//        });
+//
+//        Log.d("Account", "END");
+    }
+
     public void getMyAccounts(){
         final List<AccountVersion2> myAccountList = new ArrayList<>();
         mCollaboratorCollection.whereEqualTo("user", uid_user)

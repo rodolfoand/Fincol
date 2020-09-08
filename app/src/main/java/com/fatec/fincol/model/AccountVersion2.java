@@ -10,9 +10,9 @@ public class AccountVersion2 {
         this.name = name;
     }
 
-    public AccountVersion2(String name, String accountImage) {
+    public AccountVersion2(String id, String name) {
+        this.id = id;
         this.name = name;
-        this.accountImage = accountImage;
     }
 
     public AccountVersion2(String id, String name, String accountImage) {

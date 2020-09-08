@@ -42,6 +42,9 @@ public class AccountViewModel extends AndroidViewModel {
     public void updateAccount(String name){
         mAccountRepository.updateAccount(name);
     }
+    public void updateAccount(AccountVersion2 account){
+        mAccountRepository.updateAccount(account);
+    }
 
 
 }

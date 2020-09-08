@@ -1,6 +1,5 @@
 package com.fatec.fincol.ui.account;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -26,7 +23,7 @@ import com.fatec.fincol.model.AccountVersion2;
 
 import java.util.List;
 
-public class AccountFragment extends Fragment {
+public class AccountListFragment extends Fragment implements AccountListAdapter.CallFragNavigation {
 
     private AccountViewModel mAccountViewModel;
     private Button newAccountButton;
@@ -37,7 +34,7 @@ public class AccountFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         mAccountViewModel =
                 ViewModelProviders.of(this).get(AccountViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_account, container, false);
+        View root = inflater.inflate(R.layout.fragment_account_list, container, false);
 
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -53,7 +50,7 @@ public class AccountFragment extends Fragment {
         myAccountsRecyclerView.setLayoutManager(layoutManager);
 
 
-        final MyAccountsAdapter adapter = new MyAccountsAdapter(getActivity());
+        final AccountListAdapter adapter = new AccountListAdapter(getActivity(), this::navEdidAccountFrag);
         myAccountsRecyclerView.setAdapter(adapter);
 
 
@@ -78,12 +75,31 @@ public class AccountFragment extends Fragment {
         newAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                navController.navigate(R.id.action_nav_account_to_nav_new_account);
+                navEditAccountFragment();
             }
         });
 
 
         return root;
+    }
+
+
+    public void navEditAccountFragment(){
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController.navigate(R.id.action_nav_account_to_nav_new_account);
+    }
+
+    public void navEditAccountFragment(String account_id, String account_name, String account_image){
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        Bundle bundle = new Bundle();
+        bundle.putString("account_id", account_id);
+        bundle.putString("account_name", account_name);
+        bundle.putString("account_image", account_image);
+        navController.navigate(R.id.action_nav_account_to_nav_new_account, bundle);
+    }
+
+    @Override
+    public void navEdidAccountFrag(String account_id, String account_name, String account_image) {
+        navEditAccountFragment(account_id, account_name, account_image);
     }
 }
