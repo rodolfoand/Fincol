@@ -20,6 +20,8 @@ public class AccountViewModel extends AndroidViewModel {
     private LiveData<AccountVersion2> mActiveAccount;
     public LiveData<List<AccountVersion2>> mMyAccountList;
 
+    public LiveData<AccountVersion2> mDetailAccount;
+
     public AccountViewModel(Application application) {
         super(application);
         this.mMyAccountList = new MutableLiveData<>();
@@ -29,6 +31,7 @@ public class AccountViewModel extends AndroidViewModel {
         this.mAccountRepository = new AccountRepository(uid_user);
         this.mActiveAccount = mAccountRepository.mActiveAccount;
         this.mMyAccountList = mAccountRepository.mMyAccountList;
+        this.mDetailAccount = mAccountRepository.mDetailAccount;
 
 
         mText = new MutableLiveData<>();
@@ -46,5 +49,12 @@ public class AccountViewModel extends AndroidViewModel {
         mAccountRepository.updateAccount(account);
     }
 
+    public void getAccount(String id){
+        mAccountRepository.getAccount(id);
+    }
 
+
+    public void deleteAccount(String id){
+        mAccountRepository.deleteAccount(id);
+    }
 }

@@ -6,6 +6,9 @@ public class AccountVersion2 {
     private String name;
     private String accountImage;
 
+    public AccountVersion2() {
+    }
+
     public AccountVersion2(String name) {
         this.name = name;
     }

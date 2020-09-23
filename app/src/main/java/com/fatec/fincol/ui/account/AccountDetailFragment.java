@@ -3,6 +3,7 @@ package com.fatec.fincol.ui.account;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
@@ -22,9 +23,11 @@ import androidx.navigation.Navigation;
 
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -76,27 +79,7 @@ public class AccountDetailFragment extends Fragment {
 
         mLayout = root.findViewById(R.id.account_detail_layout);
 
-
-        if (getArguments() != null
-                && getArguments().containsKey("account_id")
-                && getArguments().containsKey("account_name")){
-
-            String account_id = getArguments().getString("account_id");
-            String account_name = getArguments().getString("account_name");
-
-            mAccount = new AccountVersion2(account_id, account_name);
-
-            accountNameEditText.setText(mAccount.getName());
-
-            if (getArguments().containsKey("account_image")
-            && getArguments().getString("account_image") != null){
-
-                String account_image = getArguments().getString("account_image");
-                mAccount.setAccountImage(account_image);
-                accountImageView.setImageBitmap(BitmapUtil.base64ToBitmap(mAccount.getAccountImage()));
-            }
-        }
-
+        mAccount = new AccountVersion2();
 
         saveAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,9 +87,6 @@ public class AccountDetailFragment extends Fragment {
                 if (nameIsEmpty()) accountNameTextInputLayout.setError(getString(R.string.name_is_required));
 
                 if (validateSaveAccount()){
-                    Toast.makeText(v.getContext(), accountNameEditText.getText().toString(), Toast.LENGTH_SHORT).show();
-
-
                     if (mAccount == null) {
                         mAccountViewModel.updateAccount(accountNameEditText.getText().toString());
                     } else {
@@ -115,6 +95,11 @@ public class AccountDetailFragment extends Fragment {
                     }
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                     navController.popBackStack();
+
+                    Toast.makeText(getActivity(), R.string.account_saved, Toast.LENGTH_SHORT).show();
+                    InputMethodManager ims =
+                            (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    ims.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             }
         });
@@ -139,7 +124,38 @@ public class AccountDetailFragment extends Fragment {
         String uid_user = preferences.getString(getString(R.string.saved_uid_user_key), "");
 
         mAccountViewModel.initialize(uid_user);
-        // TODO: Use the ViewModel
+
+
+        if (getArguments() != null
+                && getArguments().containsKey("account_id")){
+
+            String account_id = getArguments().getString("account_id");
+            Log.d("accountid", account_id);
+
+            mAccountViewModel.getAccount(account_id);
+
+            mAccountViewModel.mDetailAccount.observe(getActivity(), new Observer<AccountVersion2>() {
+                @Override
+                public void onChanged(AccountVersion2 accountVersion2) {
+                    mAccount.setId(accountVersion2.getId());
+                    mAccount.setName(accountVersion2.getName());
+
+                    accountNameEditText.setText(mAccount.getName());
+
+                    if (mAccount.getName().equals("Main")) accountNameEditText.setEnabled(false);
+
+                    if (accountVersion2.getAccountImage() != null){
+
+                        String account_image = accountVersion2.getAccountImage();
+                        mAccount.setAccountImage(account_image);
+                        accountImageView.setImageBitmap(BitmapUtil.base64ToBitmap(mAccount.getAccountImage()));
+                    }
+                }
+            });
+
+
+        }
+
     }
 
     private boolean nameIsEmpty(){

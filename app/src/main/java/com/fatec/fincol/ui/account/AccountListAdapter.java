@@ -1,13 +1,16 @@
 package com.fatec.fincol.ui.account;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fatec.fincol.R;
@@ -37,10 +40,12 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     private final LayoutInflater mInflater;
     private List<AccountVersion2> mMyAccounts; // Cached copy of words
     private CallFragNavigation mCallFragNavigation;
+    private CallDeleteAccount mDeleteAccount;
 
-    public AccountListAdapter(Context context, CallFragNavigation callFragNavigation) {
+    public AccountListAdapter(Context context, CallFragNavigation callFragNavigation, CallDeleteAccount callDeleteAccount) {
         mInflater = LayoutInflater.from(context);
         this.mCallFragNavigation = callFragNavigation;
+        this.mDeleteAccount = callDeleteAccount;
     }
 
     @NonNull
@@ -62,6 +67,43 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
                     mCallFragNavigation.navEdidAccountFrag(current.getId(), current.getName(), current.getAccountImage());
                 }
             });
+
+            holder.accountsCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                    builder.setTitle(R.string.delete_account);
+                    builder.setMessage(R.string.are_you_sure);
+
+                    builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing but close the dialog
+
+                            if (!current.getName().equals("Main"))
+                                mDeleteAccount.deleteAccount(current.getId());
+                            else Toast.makeText(v.getContext(), R.string.delete_main_account, Toast.LENGTH_LONG).show();
+
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    return false;
+                }
+            });
         }
     }
 
@@ -79,6 +121,10 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
 
     public interface CallFragNavigation{
         void navEdidAccountFrag(String account_id, String account_name, String account_image);
+    }
+
+    public interface CallDeleteAccount{
+        void deleteAccount(String account_id);
     }
 
 }

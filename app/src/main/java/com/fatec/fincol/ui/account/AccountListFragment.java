@@ -1,5 +1,6 @@
 package com.fatec.fincol.ui.account;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -8,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -23,7 +26,7 @@ import com.fatec.fincol.model.AccountVersion2;
 
 import java.util.List;
 
-public class AccountListFragment extends Fragment implements AccountListAdapter.CallFragNavigation {
+public class AccountListFragment extends Fragment implements AccountListAdapter.CallFragNavigation, AccountListAdapter.CallDeleteAccount {
 
     private AccountViewModel mAccountViewModel;
     private Button newAccountButton;
@@ -50,7 +53,7 @@ public class AccountListFragment extends Fragment implements AccountListAdapter.
         myAccountsRecyclerView.setLayoutManager(layoutManager);
 
 
-        final AccountListAdapter adapter = new AccountListAdapter(getActivity(), this::navEdidAccountFrag);
+        final AccountListAdapter adapter = new AccountListAdapter(getActivity(), this::navEdidAccountFrag, this::deleteAccount);
         myAccountsRecyclerView.setAdapter(adapter);
 
 
@@ -80,6 +83,7 @@ public class AccountListFragment extends Fragment implements AccountListAdapter.
         });
 
 
+
         return root;
     }
 
@@ -94,12 +98,18 @@ public class AccountListFragment extends Fragment implements AccountListAdapter.
         Bundle bundle = new Bundle();
         bundle.putString("account_id", account_id);
         bundle.putString("account_name", account_name);
-        bundle.putString("account_image", account_image);
+        //bundle.putString("account_image", account_image);
         navController.navigate(R.id.action_nav_account_to_nav_new_account, bundle);
     }
 
     @Override
     public void navEdidAccountFrag(String account_id, String account_name, String account_image) {
         navEditAccountFragment(account_id, account_name, account_image);
+    }
+
+    @Override
+    public void deleteAccount(String account_id) {
+        mAccountViewModel.deleteAccount(account_id);
+        Toast.makeText(getActivity(), R.string.account_deleted, Toast.LENGTH_SHORT).show();
     }
 }

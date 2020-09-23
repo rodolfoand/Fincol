@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.fatec.fincol.R;
 import com.fatec.fincol.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -62,6 +63,8 @@ public class UserRepository {
             public void onSuccess(AuthResult authResult) {
                 firebaseUser = authResult.getUser();
                 updateProfile(name);
+                AccountRepository accountRepository = new  AccountRepository(firebaseUser.getUid());
+                accountRepository.updateAccount("Main");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
