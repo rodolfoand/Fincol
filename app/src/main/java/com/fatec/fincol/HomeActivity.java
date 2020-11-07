@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fatec.fincol.model.AccountVersion2;
 import com.fatec.fincol.model.User;
 import com.fatec.fincol.ui.profile.ProfileActivity;
 import com.fatec.fincol.util.BitmapUtil;
@@ -48,13 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -73,7 +68,14 @@ public class HomeActivity extends AppCompatActivity {
 
         mHomeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
-
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                navController.navigate(R.id.action_nav_home_to_transactionFragment);
+            }
+        });
 
     }
 
@@ -110,6 +112,18 @@ public class HomeActivity extends AppCompatActivity {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString(getString(R.string.saved_uid_user_key),user.getUid());
+                editor.apply();
+
+                mHomeViewModel.initialize(user.getUid());
+            }
+        });
+
+        mHomeViewModel.mActiveAccount.observe(this, new Observer<AccountVersion2>() {
+            @Override
+            public void onChanged(AccountVersion2 accountVersion2) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(getString(R.string.saved_account_id_key),accountVersion2.getId());
                 editor.apply();
             }
         });

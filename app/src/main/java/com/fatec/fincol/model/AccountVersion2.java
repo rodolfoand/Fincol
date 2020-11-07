@@ -5,6 +5,7 @@ public class AccountVersion2 {
     private String id;
     private String name;
     private String accountImage;
+    private Double balance;
 
     public AccountVersion2() {
     }
@@ -18,10 +19,11 @@ public class AccountVersion2 {
         this.name = name;
     }
 
-    public AccountVersion2(String id, String name, String accountImage) {
+    public AccountVersion2(String id, String name, String accountImage, Double balance) {
         this.id = id;
         this.name = name;
         this.accountImage = accountImage;
+        this.balance = balance;
     }
 
     public String getId() {
@@ -46,6 +48,14 @@ public class AccountVersion2 {
 
     public void setAccountImage(String accountImage) {
         this.accountImage = accountImage;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 
     @Override

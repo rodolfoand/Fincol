@@ -1,13 +1,14 @@
 package com.fatec.fincol.ui.account;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,6 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -29,18 +32,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fatec.fincol.R;
 import com.fatec.fincol.model.AccountVersion2;
-import com.fatec.fincol.ui.profile.ProfileActivity;
+import com.fatec.fincol.model.Collaborator;
+import com.fatec.fincol.model.User;
 import com.fatec.fincol.util.BitmapUtil;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -53,8 +59,11 @@ public class AccountDetailFragment extends Fragment {
     private CardView accountImageCardView;
     private ImageView accountImageView;
     private Button saveAccountButton;
+    private MaterialButton addCollaboratorButton;
     private AccountVersion2 mAccount;
     private View mLayout;
+    private RecyclerView collabRecyclerView;
+    private RecyclerView.LayoutManager layoutManager;
 
 
     static final int REQUEST_IMAGE = 1;
@@ -76,6 +85,14 @@ public class AccountDetailFragment extends Fragment {
         accountNameTextInputLayout = root.findViewById(R.id.accountNameTextInputLayout);
         accountImageCardView = root.findViewById(R.id.accountImageCardView);
         accountImageView = root.findViewById(R.id.accountImageView);
+        addCollaboratorButton = root.findViewById(R.id.addCollaboratorButton);
+
+
+        collabRecyclerView = root.findViewById(R.id.collabRecyclerView);
+
+
+
+
 
         mLayout = root.findViewById(R.id.account_detail_layout);
 
@@ -111,6 +128,13 @@ public class AccountDetailFragment extends Fragment {
             }
         });
 
+        addCollaboratorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addCollaborator();
+            }
+        });
+
         return root;
     }
 
@@ -124,6 +148,13 @@ public class AccountDetailFragment extends Fragment {
         String uid_user = preferences.getString(getString(R.string.saved_uid_user_key), "");
 
         mAccountViewModel.initialize(uid_user);
+
+        collabRecyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getActivity());
+        collabRecyclerView.setLayoutManager(layoutManager);
+
+
+        final CollabListAdapter adapter = new CollabListAdapter(getActivity());
 
 
         if (getArguments() != null
@@ -153,9 +184,34 @@ public class AccountDetailFragment extends Fragment {
                 }
             });
 
+            collabRecyclerView.setAdapter(adapter);
 
+            mAccountViewModel.getCollabs(account_id);
+
+            mAccountViewModel.mAccountCollabUserList.observe(getActivity(), new Observer<List<User>>() {
+                @Override
+                public void onChanged(List<User> users) {
+                    Log.d("collabList", "onChanged.users: " + users.size());
+                    adapter.setUsers(users);
+                }
+            });
+
+            mAccountViewModel.mCollabUserAccountList.observe(getActivity(), new Observer<List<Collaborator>>() {
+                @Override
+                public void onChanged(List<Collaborator> collaborators) {
+                    adapter.setCollabs(collaborators);
+                }
+            });
+
+
+//            .observe(getActivity(), new Observer<List<User>>() {
+//                @Override
+//                public void onChanged(List<User> users) {
+//                    Log.d("collabList", "onChanged.users: " + users.size());
+//                    adapter.setCollabs(users);
+//                }
+//            });
         }
-
     }
 
     private boolean nameIsEmpty(){
@@ -249,5 +305,40 @@ public class AccountDetailFragment extends Fragment {
 
 
         }
+    }
+
+    public void addCollaborator(){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.dialog_edit_email, null);
+        EditText emailEditTextInput = alertLayout.findViewById(R.id.emailEditTextInput);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setView(alertLayout);
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                addAccount(emailEditTextInput.getText().toString(), mAccount.getId());
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    public void addAccount(String email, String id_account){
+        mAccountViewModel.addCollaborator(email, id_account).observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (Integer.parseInt(s) == 0)
+                    Toast.makeText(getActivity(), R.string.email_not_found, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), R.string.collaborator_added, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

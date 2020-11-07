@@ -25,7 +25,7 @@ public class UserRepository {
     private FirebaseAuth mAuth;
     private FirebaseUser firebaseUser;
     public MutableLiveData<Boolean> isSignIn;
-    private CollectionReference mUserCollection;
+    public CollectionReference mUserCollection;
     public MutableLiveData<User> mUser;
 
     public UserRepository() {
@@ -135,6 +135,10 @@ public class UserRepository {
     private void setUser(User user){
         if (user.getProfileImage() == null) user.setProfileImage(new String());
         mUser.setValue(user);
+    }
+
+    public void forgotPass(String email){
+        mAuth.sendPasswordResetEmail(email);
     }
 
 }

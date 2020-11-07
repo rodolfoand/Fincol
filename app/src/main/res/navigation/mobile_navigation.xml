@@ -8,8 +8,12 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.fatec.fincol.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:label="@string/fincol"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_transactionFragment"
+            app:destination="@id/transactionFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_gallery"
@@ -32,5 +36,10 @@
         android:name="com.fatec.fincol.ui.account.AccountDetailFragment"
         android:label="@string/account"
         tools:layout="@layout/fragment_account_detail" />
+    <fragment
+        android:id="@+id/transactionFragment"
+        android:name="com.fatec.fincol.ui.transaction.TransactionFragment"
+        android:label="@string/transaction"
+        tools:layout="@layout/fragment_transaction" />
 
 </navigation>
