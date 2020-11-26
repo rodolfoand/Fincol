@@ -8,8 +8,12 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.fatec.fincol.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:label="@string/fincol"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_transactionFragment"
+            app:destination="@id/transactionFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_gallery"
@@ -18,8 +22,24 @@
         tools:layout="@layout/fragment_statement" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.fatec.fincol.ui.appointments.AppointmentsFragment"
-        android:label="@string/menu_appointments"
-        tools:layout="@layout/fragment_appointments" />
+        android:id="@+id/nav_account_list"
+        android:name="com.fatec.fincol.ui.account.AccountListFragment"
+        android:label="@string/menu_account"
+        tools:layout="@layout/fragment_account_list" >
+        <action
+            android:id="@+id/action_nav_account_to_nav_new_account"
+            app:destination="@id/nav_account_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_account_detail"
+        android:name="com.fatec.fincol.ui.account.AccountDetailFragment"
+        android:label="@string/account"
+        tools:layout="@layout/fragment_account_detail" />
+    <fragment
+        android:id="@+id/transactionFragment"
+        android:name="com.fatec.fincol.ui.transaction.TransactionFragment"
+        android:label="@string/transaction"
+        tools:layout="@layout/fragment_transaction" />
+
 </navigation>

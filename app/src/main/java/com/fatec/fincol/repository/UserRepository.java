@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.fatec.fincol.R;
 import com.fatec.fincol.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,7 +25,7 @@ public class UserRepository {
     private FirebaseAuth mAuth;
     private FirebaseUser firebaseUser;
     public MutableLiveData<Boolean> isSignIn;
-    private CollectionReference mUserCollection;
+    public CollectionReference mUserCollection;
     public MutableLiveData<User> mUser;
 
     public UserRepository() {
@@ -62,6 +63,8 @@ public class UserRepository {
             public void onSuccess(AuthResult authResult) {
                 firebaseUser = authResult.getUser();
                 updateProfile(name);
+                AccountRepository accountRepository = new  AccountRepository(firebaseUser.getUid());
+                accountRepository.updateAccount("Main");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -132,6 +135,10 @@ public class UserRepository {
     private void setUser(User user){
         if (user.getProfileImage() == null) user.setProfileImage(new String());
         mUser.setValue(user);
+    }
+
+    public void forgotPass(String email){
+        mAuth.sendPasswordResetEmail(email);
     }
 
 }

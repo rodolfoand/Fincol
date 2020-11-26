@@ -1,7 +1,9 @@
 package com.fatec.fincol;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Menu;
 import android.widget.ImageView;
@@ -10,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fatec.fincol.model.AccountVersion2;
 import com.fatec.fincol.model.User;
 import com.fatec.fincol.ui.profile.ProfileActivity;
 import com.fatec.fincol.util.BitmapUtil;
@@ -45,26 +48,34 @@ public class HomeActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setVisibility(View.INVISIBLE);
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_account_list)
                 .setDrawerLayout(drawer)
                 .build();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("amount", "1");
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         mHomeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                navController.navigate(R.id.action_nav_home_to_transactionFragment);
+            }
+        });
 
     }
 
@@ -89,6 +100,32 @@ public class HomeActivity extends AppCompatActivity {
                 emailUserTextView.setText(user.getEmail());
                 if (!user.getProfileImage().isEmpty())
                     imageView.setImageBitmap(BitmapUtil.base64ToBitmap(user.getProfileImage()));
+
+//                Context context = getApplicationContext();
+//                SharedPreferences sharedPref = context.getSharedPreferences(
+//                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPref.edit();
+//                editor.putString(getString(R.string.saved_uid_user_key), user.getUid());
+//                //editor.putString(user.getUid(), "Not found");
+//                editor.commit();
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(getString(R.string.saved_uid_user_key),user.getUid());
+                editor.apply();
+
+                mHomeViewModel.initialize(user.getUid());
+                mHomeViewModel.setAccount(user.getUid());
+            }
+        });
+
+        mHomeViewModel.mActiveAccount.observe(this, new Observer<AccountVersion2>() {
+            @Override
+            public void onChanged(AccountVersion2 accountVersion2) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(getString(R.string.saved_account_id_key),accountVersion2.getId());
+                editor.apply();
             }
         });
 
@@ -125,4 +162,5 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         }
     }
+
 }

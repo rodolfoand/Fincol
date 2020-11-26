@@ -26,4 +26,8 @@ public class SignInViewModel extends AndroidViewModel {
         mRepository.setIsSignIn();
     }
 
+    public void forgotPass(String email){
+        mRepository.forgotPass(email);
+    }
+
 }

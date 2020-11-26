@@ -113,7 +113,19 @@ public class SignInActivity extends AppCompatActivity {
         forgotTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), R.string.forgot_password, Toast.LENGTH_SHORT).show();
+                emailLabel.setError(null);
+                passLabel.setError(null);
+
+                if (emailIsEmpty())
+                    emailLabel.setError(getString(R.string.e_mail_is_required));
+                else if (!emailIsValid())
+                    emailLabel.setError(getString(R.string.e_mail_invalid));
+                else {
+                    emailLabel.setError(null);
+                    mSignInViewModel.forgotPass(emailTextInput.getText().toString());
+                    Toast.makeText(v.getContext(), R.string.forgot_email, Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 

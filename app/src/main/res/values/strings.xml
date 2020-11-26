@@ -33,7 +33,7 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_statement">Statement</string>
-    <string name="menu_appointments">Appointments</string>
+    <string name="menu_account">My Accounts</string>
     <string name="edit_profile">Edit profile</string>
     <string name="profile">Profile</string>
     <string name="account_box">Account box</string>
@@ -51,4 +51,73 @@
     <string name="welcome_back">Welcome back!</string>
     <string name="come_back_soon">Come back soon!</string>
     <string name="bye">Bye!</string>
+    <string name="new_">New</string>
+    <string name="new_account">New Account</string>
+    <string name="account">Account</string>
+    <string name="account_image">account image</string>
+    <string name="add_collaborator">Add new collaborator</string>
+    <string name="save">Save</string>
+    <string name="account_name">Account name</string>
+    <string name="list_of_collaborators">List of collaborators</string>
+    <string name="add">Add</string>
+    <string name="saved_uid_user_key">saved_uid_user_key</string>
+    <string name="preference_file_key">preference_file_key</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="account_deleted">Account deleted!</string>
+    <string name="account_saved">Account saved!</string>
+    <string name="main">Main</string>
+    <string name="delete_main_account">Main account cannot be deleted!</string>
+    <string name="email_not_found">E-mail not found on Fincol!</string>
+    <string name="collaborator_added">Collaborator added!</string>
+    <string name="status">Status</string>
+    <string name="type">Type</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="inactive">Inactive</string>
+    <string name="active_account">Active account</string>
+    <string name="active">Active</string>
+    <string name="forgot_email">Password reset e-mail has been sent!</string>
+    <string name="transaction">Transaction</string>
+    <string name="date">Date</string>
+    <string name="value">Value</string>
+    <string name="location">Location</string>
+    <string name="description">Description</string>
+    <string name="fixed">Fixed</string>
+    <string name="repeat">Repeat</string>
+    <string name="value_is_required">Value is required.</string>
+    <string name="saved_account_id_key">saved_account_id_key</string>
+    <string name="balance_now">Balance now</string>
+    <string name="transaction_inserted">Transaction inserted.</string>
+    <string name="add_category">Add category</string>
+    <string name="new_category">New category</string>
+    <string name="category">Category</string>
+    <string name="select_future_date">Select a future date to schedule transactions.</string>
+    <string name="category_required">Category is required.</string>
+    <string-array name="transaction_list">
+        <item>Expense</item>
+        <item>Income</item>
+    </string-array>
+    <string-array name="repeat_list">
+        <item>2x</item>
+        <item>3x</item>
+        <item>4x</item>
+        <item>5x</item>
+        <item>6x</item>
+        <item>7x</item>
+        <item>8x</item>
+        <item>9x</item>
+        <item>10x</item>
+        <item>11x</item>
+        <item>12x</item>
+    </string-array>
+    <string-array name="period_list">
+        <item>7 days</item>
+        <item>15 days</item>
+        <item>30 days</item>
+        <item>60 days</item>
+        <item>90 days</item>
+    </string-array>
 </resources>
