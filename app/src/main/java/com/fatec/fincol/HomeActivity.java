@@ -115,6 +115,7 @@ public class HomeActivity extends AppCompatActivity {
                 editor.apply();
 
                 mHomeViewModel.initialize(user.getUid());
+                mHomeViewModel.setAccount(user.getUid());
             }
         });
 

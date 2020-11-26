@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.fatec.fincol.model.CategoryExpense;
 import com.fatec.fincol.model.Transaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,11 +32,14 @@ public class TransactionRepository {
     private CollectionReference mAccountCollection;
     public MutableLiveData<List<Transaction>> mTransactionList;
     public MutableLiveData<List<String>> mCategoryList;
+    public MutableLiveData<List<CategoryExpense>> mCategoryExpenseList;
 
     public TransactionRepository() {
         this.mAccountCollection = FirebaseFirestore.getInstance().collection("account");
         this.mTransactionList = new MutableLiveData<>();
         this.mCategoryList = new MutableLiveData<>();
+        this.mCategoryExpenseList = new MutableLiveData<>();
+        this.mCategoryExpenseList.setValue(new ArrayList<>());
     }
 
     public LiveData<String> addTransaction(String account_id, Transaction transaction, List<String> categoryList){
@@ -56,6 +60,9 @@ public class TransactionRepository {
 
                             for (String cat: categoryList) {
                                 String catExpName = cat + "-" + dfDate.format(transaction.getDate());
+                                Map<String, Object> category = new HashMap<>();
+                                category.put("name", cat);
+                                mAccountCollection.document(account_id).collection("category").document(cat).set(category);
 
                                 mAccountCollection.document(account_id).collection("category-expense").document(catExpName).get()
                                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -76,23 +83,25 @@ public class TransactionRepository {
 
                             }
                         } else {
-                            String catExpName = "Other" + "-" + dfDate.format(transaction.getDate());
-                            mAccountCollection.document(account_id).collection("category-expense").document(catExpName).get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            double value = transaction.getValue();
-                                            if (task.isSuccessful()){
-                                                if (task.getResult().contains("value"))
-                                                    value += Double.parseDouble(task.getResult().get("value").toString());
-                                            }
+                            if (transaction.getType().equals(Transaction.Type.Expense)) {
+                                String catExpName = "Others" + "-" + dfDate.format(transaction.getDate());
+                                mAccountCollection.document(account_id).collection("category-expense").document(catExpName).get()
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                double value = transaction.getValue();
+                                                if (task.isSuccessful()) {
+                                                    if (task.getResult().contains("value"))
+                                                        value += Double.parseDouble(task.getResult().get("value").toString());
+                                                }
 
-                                            Map<String, Object> category = new HashMap<>();
-                                            category.put("name", "Other");
-                                            category.put("value", value);
-                                            mAccountCollection.document(account_id).collection("category-expense").document(catExpName).set(category);
-                                        }
-                                    });
+                                                Map<String, Object> category = new HashMap<>();
+                                                category.put("name", "Others");
+                                                category.put("value", value);
+                                                mAccountCollection.document(account_id).collection("category-expense").document(catExpName).set(category);
+                                            }
+                                        });
+                            }
                         }
 
 
@@ -206,5 +215,24 @@ public class TransactionRepository {
                 mCategoryList.setValue(stringList);
             }
         });
+    }
+
+    public void getCategoryExpenses(String account, List<String> stringList){
+        mCategoryExpenseList.setValue(new ArrayList<>());
+        for (String cat : stringList){
+            mAccountCollection.document(account).collection("category-expense").document(cat).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.contains("name")){
+                        List<CategoryExpense> categoryExpenseList = new ArrayList<>();
+                        categoryExpenseList.addAll(mCategoryExpenseList.getValue());
+                        CategoryExpense categoryExpense = new CategoryExpense(documentSnapshot.get("name").toString(), (documentSnapshot.getDouble("value")).floatValue());
+                        categoryExpenseList.add(categoryExpense);
+                        mCategoryExpenseList.setValue(categoryExpenseList);
+                    }
+                }
+            });
+        }
     }
 }

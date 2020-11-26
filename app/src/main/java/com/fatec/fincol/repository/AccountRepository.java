@@ -60,6 +60,7 @@ public class AccountRepository {
 
     public void updateAccount(String name){
         AccountVersion2 account = new AccountVersion2(name);
+        account.setBalance(0d);
         mAccountCollection.add(account).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -327,6 +328,7 @@ public class AccountRepository {
                             Collaborator.StatusColl.get(document.get("status").toString()),
                             Collaborator.TypeColl.get(document.get("type").toString())
                     );
+
                     if (collaborator.getAccount().equals(account_id)){
                         collaborator.setStatus(Collaborator.StatusColl.ACTIVE);
                         mCollaboratorCollection.document(document.getId()).set(collaborator);
@@ -340,6 +342,7 @@ public class AccountRepository {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 getMyAccounts();
+
             }
         });
     }
@@ -522,5 +525,6 @@ public class AccountRepository {
                     }
                 });
     }
+
 
 }

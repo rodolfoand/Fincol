@@ -1,8 +1,10 @@
 package com.fatec.fincol.ui.home;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +22,23 @@ import androidx.navigation.Navigation;
 
 import com.fatec.fincol.R;
 import com.fatec.fincol.model.AccountVersion2;
+import com.fatec.fincol.model.CategoryExpense;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment {
@@ -32,7 +47,9 @@ public class HomeFragment extends Fragment {
     private TextView symbolCurrencyTextView;
     private TextView balanceValueTextView;
     private FloatingActionButton transactFloatingActionButton;
-    private WebView homeChartWebView;
+    private PieChart piechart;
+    private AccountVersion2 accountObj;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,83 +60,42 @@ public class HomeFragment extends Fragment {
         balanceValueTextView = root.findViewById(R.id.balanceValueTextView);
         symbolCurrencyTextView = root.findViewById(R.id.symbolCurrencyTextView);
         transactFloatingActionButton = root.findViewById(R.id.transactFloatingActionButton);
-        homeChartWebView = root.findViewById(R.id.homeChartWebView);
 
-        //homeChartWebView.getSettings().setJavaScriptEnabled(true);
-        //homeChartWebView.setWebViewClient(new WebViewClient());
+        //ini
 
-        //String url =  "http://chart.apis.google.com/chart?cht=p3&chs=500x200&chd=e:TNTNTNGa&chts=000000,16&chtt=A+Better+Web&chl=Hello|Hi|anas|Explorer&chco=FF5533,237745,9011D3,335423&chdl=Apple|Mozilla|Google|Microsoft";
+        PieChart pieChart = root.findViewById(R.id.piechart);
 
-//        String url = "https://chart.googleapis.com/chart?" +
-//                "cht=lc&" + //define o tipo do gráfico "linha"
-//                "chxt=x,y&" + //imprime os valores dos eixos X, Y
-//                "chs=300x300&" + //define o tamanho da imagem
-//                "chd=t:10,45,5,10,13,26&" + //valor de cada coluna do gráfico
-//                "chl=Jan|Fev|Mar|Abr|Mai|Jun&" + //rótulo para cada coluna
-//                "chdl=Vendas&" + //legenda do gráfico
-//                "chxr=1,0,50&" + //define o valor de início e fim do eixo
-//                "chds=0,50&" + //define o valor de escala dos dados
-//                "chg=0,5,0,0&" + //desenha linha horizontal na grade
-//                "chco=3D7930&" + //cor da linha do gráfico
-//                "chtt=Vendas+x+1000&" + //cabeçalho do gráfico
-//                "chm=B,C5D4B5BB,0,0,0"; //fundo verde
 
-        String url = "<html>"+
-                "<head>"+
-    "<!--Load the AJAX API-->"+
-    "<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>"+
-    "<script type=\"text/javascript\">"+
+        //fim
 
-                // Load the Visualization API and the corechart package.
-                "google.charts.load('current', {'packages':['corechart']});"+
-
-        // Set a callback to run when the Google Visualization API is loaded.
-        "google.charts.setOnLoadCallback(drawChart);"+
-
-        // Callback that creates and populates a data table,
-        // instantiates the pie chart, passes in the data and
-        // draws it.
-        "function drawChart() {"+
-
-            // Create the data table.
-            "var data = new google.visualization.DataTable();"+
-            "data.addColumn('string', 'Topping');"+
-            "data.addColumn('number', 'Slices');"+
-            "data.addRows(["+
-          "['Mushrooms', 3],"+
-          "['Onions', 1],"+
-          "['Olives', 1],"+
-          "['Zucchini', 1],"+
-          "['Pepperoni', 2]"+
-        "]);"+
-
-            // Set chart options
-            "var options = {'title':'How Much Pizza I Ate Last Night',"+
-                    "'width':400,"+
-                    "'height':300};"+
-
-            // Instantiate and draw our chart, passing in some options.
-            "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));"+
-            "chart.draw(data, options);"+
-        "}"+
-    "</script>"+
-  "</head>"+
-
-  "<body>"+
-    "<!--Div that will hold the pie chart-->"+
-    "<div id=\"chart_div\"></div>"+
-  "</body>"+
-"</html>";
-
-        //homeChartWebView.loadUrl(url);
-        //url = "<html><body>You scored <b>192</b> points.</body></html>";
-        //homeChartWebView.loadUrl("file:///android_res/layout/homechart.html");
-
-        homeChartWebView.setVisibility(View.INVISIBLE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String user = preferences.getString(getString(R.string.saved_uid_user_key), "");
+        String account = preferences.getString(getString(R.string.saved_account_id_key), "");
+
 
         mHomeViewModel.initialize(user);
+
+        if (!account.equals("")) mHomeViewModel.getCategories(account);
+
+
+        mHomeViewModel.mCategoryList.observe(getActivity(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                List<String> stringList = new ArrayList<>();
+                Calendar c = Calendar.getInstance();
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH) + 1;
+                String concateName = "-" + month + year;
+                for (String categoryExpense : strings){
+                    stringList.add(categoryExpense + concateName);
+                    Log.d("cat2", categoryExpense + concateName);
+                }
+
+
+                mHomeViewModel.getCategoryExpenses(account, stringList);
+
+            }
+        });
 
 
         transactFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -130,9 +106,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        pieChart.clear();
+        pieChart.invalidate();
         mHomeViewModel.mActiveAccount.observe(getActivity(), new Observer<AccountVersion2>() {
             @Override
             public void onChanged(AccountVersion2 accountVersion2) {
+                accountObj = accountVersion2;
 
 
                 String formatted = NumberFormat.getCurrencyInstance(Locale.getDefault()).format(accountVersion2.getBalance());
@@ -141,9 +120,78 @@ public class HomeFragment extends Fragment {
                 String cleanString = formatted.replaceAll(replaceable, "");
                 symbolCurrencyTextView.setText(NumberFormat.getCurrencyInstance(Locale.getDefault()).getCurrency().getSymbol() + " ");
                 balanceValueTextView.setText(cleanString);
+                //pieChart.invalidate();
+
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(getString(R.string.saved_account_id_key),accountVersion2.getId());
+                editor.apply();
+                pieChart.clear();
+                pieChart.invalidate();
+
+
+                mHomeViewModel.mCategoryExpenseList.observe(getActivity(), new Observer<List<CategoryExpense>>() {
+                    @Override
+                    public void onChanged(List<CategoryExpense> categoryExpenses) {
+
+                        pieChart.clear();
+                        pieChart.invalidate();
+                        List<PieEntry> entries = new ArrayList<>();
+                        entries.clear();
+
+                        Log.d("acc", account);
+
+                        float total = 0;
+
+                        for(CategoryExpense catExp : categoryExpenses){
+                            total -= catExp.getValue();
+                        }
+
+                        if (accountObj != null && accountObj.getBalance() > 0
+                        ){
+                            total -= - accountObj.getBalance();
+                            entries.add(new PieEntry(- 100 *  - accountObj.getBalance().floatValue() / total, getString(R.string.balance_now)));
+                        }
+
+
+                        for (CategoryExpense catExp : categoryExpenses){
+                            //entries.add(new PieEntry(catExp.getValue(), catExp.getName()));
+                            entries.add(new PieEntry(- 100 * catExp.getValue() / total, catExp.getName()));
+                            //Log.d("cat2", catExp.getName() + catExp.getValue());
+                        }
+//
+//                entries.add(new PieEntry(18.5f, "Green"));
+//                entries.add(new PieEntry(26.7f, "Yellow"));
+//                entries.add(new PieEntry(24.0f, "Red"));
+//                entries.add(new PieEntry(30.8f, "Blue"));
+                        ArrayList<Integer> colors = new ArrayList<>();
+                        colors.add(Color.GRAY);
+                        colors.add(Color.BLUE);
+                        colors.add(Color.RED);
+                        colors.add(Color.GREEN);
+                        colors.add(Color.CYAN);
+                        colors.add(Color.YELLOW);
+                        colors.add(Color.DKGRAY);
+                        colors.add(Color.MAGENTA);
+                        colors.add(Color.WHITE);
+                        colors.add(Color.BLACK);
+                        colors.add(Color.LTGRAY);
+
+                        PieDataSet set = new PieDataSet(entries, "");
+                        PieData data = new PieData(set);
+                        set.setColors(colors);
+                        set.setValueTextSize(20);
+                        set.setSliceSpace(2);
+                        set.setLabel("Categories");
+                        pieChart.setData(data);
+
+                        pieChart.invalidate(); // refresh
+                    }
+                });
+
             }
         });
-
 
         return root;
     }

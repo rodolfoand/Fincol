@@ -29,6 +29,9 @@ public class HomeViewModel extends AndroidViewModel {
     public void initialize(String uid_user){
         this.mAccountRepository = new AccountRepository(uid_user);
         mActiveAccount = mAccountRepository.mActiveAccount;
+    }
+
+    public void setAccount(String uid_user){
         mAccountRepository.setActiveAccount(uid_user);
     }
 }
