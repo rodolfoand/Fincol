@@ -38,6 +38,7 @@ import com.fatec.fincol.model.Transaction;
 import com.fatec.fincol.ui.account.AccountListAdapter;
 import com.fatec.fincol.ui.account.AccountViewModel;
 import com.fatec.fincol.ui.category.CategoryListAdapter;
+import com.fatec.fincol.ui.home.HomeFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -310,7 +311,9 @@ public class TransactionFragment extends Fragment
                         }
                     });
 
-                } else valueTransactTextInputLayout.setError(getString(R.string.value_is_required));
+                } else {
+                    valueTransactTextInputLayout.setError(getString(R.string.value_is_required));
+                }
 
 
             }
