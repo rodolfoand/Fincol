@@ -63,8 +63,13 @@
                             android:id="@+id/imageView44"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             app:srcCompat="@drawable/ic_baseline_arrow_downward_24" />
+
+                        <ImageView
+                            android:id="@+id/imageView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_baseline_arrow_upward_24" />
                     </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -82,12 +87,6 @@
                         android:layout_height="wrap_content"
                         android:background="#0000FF">
 
-                        <ImageView
-                            android:id="@+id/imageView4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:srcCompat="@drawable/ic_baseline_arrow_upward_24" />
                     </FrameLayout>
                 </androidx.cardview.widget.CardView>
 

@@ -132,6 +132,11 @@ public class ProfileActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_delete_user:
                 mProfileViewModel.deleteUser();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
+
                 Intent replyIntent = new Intent();
                 setResult(HomeActivity.DELETE_REQUEST_CODE, replyIntent);
                 finish();

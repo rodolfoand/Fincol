@@ -157,7 +157,7 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.come_back_soon, Toast.LENGTH_SHORT).show();
 
             if (resultCode == DELETE_REQUEST_CODE) {
-                Toast.makeText(this, R.string.bye, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.bye, Toast.LENGTH_LONG).show();
                 finishAffinity();
             }
 
