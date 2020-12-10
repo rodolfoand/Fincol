@@ -139,7 +139,7 @@ public class HomeFragment extends Fragment {
                 pieChart.clear();
                 pieChart.invalidate();
                 List<PieEntry> entries = new ArrayList<>();
-                                    entries.clear();
+                entries.clear();
 
                 //                    Log.d("acc", account);
 
@@ -189,6 +189,7 @@ public class HomeFragment extends Fragment {
                 PieDataSet set = new PieDataSet(entries, "");
                 PieData data = new PieData(set);
 
+                set.setColors(colors);
                 set.setValueTextSize(20);
                 set.setSliceSpace(2);
                 set.setLabel("%");
