@@ -218,7 +218,7 @@ public class TransactionRepository {
     }
 
     public void getCategoryExpenses(String account, List<String> stringList){
-        mCategoryExpenseList.setValue(new ArrayList<>());
+        //mCategoryExpenseList.setValue(new ArrayList<>());
         for (String cat : stringList){
             mAccountCollection.document(account).collection("category-expense").document(cat).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

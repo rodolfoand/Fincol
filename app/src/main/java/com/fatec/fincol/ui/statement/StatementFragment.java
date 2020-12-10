@@ -100,7 +100,7 @@ public class StatementFragment extends Fragment {
         statementSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), position + "", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), position + "", Toast.LENGTH_SHORT).show();
 
                 int days;
 

@@ -113,7 +113,7 @@ public class AccountDetailFragment extends Fragment {
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                     navController.popBackStack();
 
-                    Toast.makeText(getActivity(), R.string.account_saved, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.account_saved, Toast.LENGTH_LONG).show();
                     InputMethodManager ims =
                             (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     ims.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -335,9 +335,9 @@ public class AccountDetailFragment extends Fragment {
             @Override
             public void onChanged(String s) {
                 if (Integer.parseInt(s) == 0)
-                    Toast.makeText(getActivity(), R.string.email_not_found, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.email_not_found, Toast.LENGTH_LONG).show();
                 else
-                    Toast.makeText(getActivity(), R.string.collaborator_added, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.collaborator_added, Toast.LENGTH_LONG).show();
             }
         });
     }

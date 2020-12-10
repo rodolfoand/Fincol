@@ -97,6 +97,7 @@
     <string name="select_future_date">Select a future date to schedule transactions.</string>
     <string name="category_required">Category is required.</string>
     <string name="or_sign_in_with">Or sign in with</string>
+    <string name="under_construction">Under construction</string>
     <string-array name="transaction_list">
         <item>Expense</item>
         <item>Income</item>

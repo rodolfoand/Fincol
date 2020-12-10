@@ -99,14 +99,14 @@ public class SignInActivity extends AppCompatActivity {
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), R.string.log_in_with_google, Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), R.string.under_construction, Toast.LENGTH_SHORT).show();
             }
         });
 
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), R.string.log_in_with_the_facebook, Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), R.string.under_construction, Toast.LENGTH_SHORT).show();
             }
         });
 

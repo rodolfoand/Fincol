@@ -51,6 +51,7 @@ public class HomeFragment extends Fragment {
     private PieChart piechart;
     private AccountVersion2 accountObj;
     private PieChart pieChart;
+    private List<CategoryExpense> mCategoryExpenses;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -66,6 +67,7 @@ public class HomeFragment extends Fragment {
         //ini
 
         pieChart = root.findViewById(R.id.piechart);
+        mCategoryExpenses = new ArrayList<>();
 
 
         //fim
@@ -77,7 +79,7 @@ public class HomeFragment extends Fragment {
 
         mHomeViewModel.initialize(user);
 
-        if (!account.equals("")) mHomeViewModel.getCategories(account);
+
 
 
         mHomeViewModel.mCategoryList.observe(getActivity(), new Observer<List<String>>() {
@@ -108,8 +110,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        pieChart.clear();
-        pieChart.invalidate();
+//        pieChart.clear();
+//        pieChart.invalidate();
         mHomeViewModel.mActiveAccount.observe(getActivity(), new Observer<AccountVersion2>() {
             @Override
             public void onChanged(AccountVersion2 accountVersion2) {
@@ -129,12 +131,9 @@ public class HomeFragment extends Fragment {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString(getString(R.string.saved_account_id_key),accountVersion2.getId());
                 editor.apply();
-                pieChart.clear();
-                pieChart.invalidate();
-
-
-
-
+//                pieChart.clear();
+//                pieChart.invalidate();
+                mHomeViewModel.getCategories(account);
             }
         });
 
@@ -142,79 +141,76 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(List<CategoryExpense> categoryExpenses) {
 
-                pieChart.clear();
-                pieChart.invalidate();
-                List<PieEntry> entries = new ArrayList<>();
-                entries.clear();
+                if (!mCategoryExpenses.containsAll(categoryExpenses)) {
+//                    pieChart.clear();
+//                    pieChart.invalidate();
+                    List<PieEntry> entries = new ArrayList<>();
+//                    entries.clear();
 
-                Log.d("acc", account);
+//                    Log.d("acc", account);
 
-                float total = 0;
+                    float total = 0;
 
-                for(CategoryExpense catExp : categoryExpenses){
-                    total -= catExp.getValue();
-                }
+                    for(CategoryExpense catExp : categoryExpenses){
+                        total -= catExp.getValue();
+                    }
 
-                ArrayList<Integer> colors = new ArrayList<>();
+                    ArrayList<Integer> colors = new ArrayList<>();
+                    colors.clear();
 
-                if (accountObj != null && accountObj.getBalance() > 0
-                ){
-                    total -= - accountObj.getBalance();
-                    entries.add(new PieEntry(- 100 *  - accountObj.getBalance().floatValue() / total, getString(R.string.balance_now)));
-                    colors.add(Color.parseColor("#FFB94F"));
-                }
+                    if (accountObj != null && accountObj.getBalance() > 0){
+                        total -= - accountObj.getBalance();
+                        entries.add(new PieEntry(- 100 *  - accountObj.getBalance().floatValue() / total, getString(R.string.balance_now)));
+                        colors.add(Color.parseColor("#FFB94F"));
+                    }
 
 
-                for (CategoryExpense catExp : categoryExpenses){
-                    //entries.add(new PieEntry(catExp.getValue(), catExp.getName()));
-                    entries.add(new PieEntry(- 100 * catExp.getValue() / total, catExp.getName()));
-                    //Log.d("cat2", catExp.getName() + catExp.getValue());
-                }
+                    for (CategoryExpense catExp : categoryExpenses){
+                        //entries.add(new PieEntry(catExp.getValue(), catExp.getName()));
+                        entries.add(new PieEntry(- 100 * catExp.getValue() / total, catExp.getName()));
+                        //Log.d("cat2", catExp.getName() + catExp.getValue());
+                    }
 //
 
-                colors.add(Color.parseColor("#6A5ACD"));
-                colors.add(Color.parseColor("#836FFF"));
-                colors.add(Color.parseColor("#483D8B"));
-                colors.add(Color.parseColor("#191970"));
-                colors.add(Color.parseColor("#000080"));
-                colors.add(Color.parseColor("#00008B"));
-                colors.add(Color.parseColor("#0000CD"));
-                colors.add(Color.parseColor("#0000FF"));
-                colors.add(Color.parseColor("#6495ED"));
-                colors.add(Color.parseColor("#4169E1"));
-                colors.add(Color.parseColor("#1E90FF"));
-                colors.add(Color.parseColor("#00BFFF"));
-                colors.add(Color.parseColor("#87CEFA"));
-                colors.add(Color.parseColor("#87CEEB"));
-                colors.add(Color.parseColor("#ADD8E6"));
-                colors.add(Color.parseColor("#4682B4"));
-                colors.add(Color.parseColor("#B0C4DE"));
-                colors.add(Color.parseColor("#708090"));
-                colors.add(Color.parseColor("#778899"));
+                    colors.add(Color.parseColor("#6A5ACD"));
+                    colors.add(Color.parseColor("#836FFF"));
+                    colors.add(Color.parseColor("#483D8B"));
+                    colors.add(Color.parseColor("#191970"));
+                    colors.add(Color.parseColor("#000080"));
+                    colors.add(Color.parseColor("#00008B"));
+                    colors.add(Color.parseColor("#0000CD"));
+                    colors.add(Color.parseColor("#0000FF"));
+                    colors.add(Color.parseColor("#6495ED"));
+                    colors.add(Color.parseColor("#4169E1"));
+                    colors.add(Color.parseColor("#1E90FF"));
+                    colors.add(Color.parseColor("#00BFFF"));
+                    colors.add(Color.parseColor("#87CEFA"));
+                    colors.add(Color.parseColor("#87CEEB"));
+                    colors.add(Color.parseColor("#ADD8E6"));
+                    colors.add(Color.parseColor("#4682B4"));
+                    colors.add(Color.parseColor("#B0C4DE"));
+                    colors.add(Color.parseColor("#708090"));
+                    colors.add(Color.parseColor("#778899"));
 
-                PieDataSet set = new PieDataSet(entries, "");
-                PieData data = new PieData(set);
+                    PieDataSet set = new PieDataSet(entries, "");
+                    PieData data = new PieData(set);
 
-                set.setValueTextSize(20);
-                set.setSliceSpace(2);
-                set.setLabel("%");
+                    set.setValueTextSize(20);
+                    set.setSliceSpace(2);
+                    set.setLabel("%");
 
-                cleanChart();
 
-                pieChart.setData(data);
-                Description description = new Description();
-                description.setText("Categories");
-                pieChart.setDescription(description);
+                    pieChart.setData(data);
+                    Description description = new Description();
+                    description.setText("Categories");
+                    pieChart.setDescription(description);
 
-                pieChart.invalidate(); // refresh
+                    pieChart.invalidate(); // refresh
+                }
+
             }
         });
 
         return root;
-    }
-
-    public void cleanChart(){
-        pieChart.clear();
-        pieChart.invalidate();
     }
 }
